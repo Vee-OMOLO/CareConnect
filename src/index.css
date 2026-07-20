@@ -94,17 +94,22 @@ body {
 
 .app-shell {
   width: 100%;
-  max-width: 430px;
-  margin: 0 auto;
   min-height: 100dvh;
   position: relative;
+  padding-bottom: 80px;
 }
 
 @media (min-width: 768px) {
   .app-shell {
-    box-shadow: 0 0 60px rgba(0,0,0,0.08);
-    border-left: 1px solid rgba(0,0,0,0.05);
-    border-right: 1px solid rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    max-width: 480px;
+    margin: 0 auto;
   }
 }
 

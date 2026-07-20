@@ -178,7 +178,7 @@ export default function SafetyVault() {
       {showAddContact && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div className="absolute inset-0 bg-black/30" onClick={() => setShowAddContact(false)} />
-          <div className="relative bg-white rounded-t-2xl w-full max-w-[430px] p-6 pb-8 animate-slide-up shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+          <div className="relative bg-white rounded-t-2xl w-full max-w-md p-6 pb-8 animate-slide-up shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
             <div className="w-10 h-1 bg-outline-variant/40 rounded-full mx-auto mb-5" />
             <h2 className="text-lg font-bold text-on-surface mb-5">Add Contact</h2>
             <div className="space-y-3">

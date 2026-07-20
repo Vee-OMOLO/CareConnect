@@ -22,9 +22,10 @@ export default function BottomNav() {
   const tabs = userRole === 'parent' ? parentTabs : caregiverTabs;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="mx-2 mb-2 bg-white rounded-2xl border border-black/[0.04] shadow-[0_-1px_3px_rgba(0,0,0,0.02),0_4px_12px_rgba(0,0,0,0.04)]">
-        <div className="flex items-center justify-around py-1.5">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full z-50">
+      <div className="max-w-[480px] mx-auto px-3 pb-3">
+        <div className="bg-white rounded-2xl border border-black/[0.04] shadow-[0_-1px_3px_rgba(0,0,0,0.02),0_4px_12px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-around py-1.5">
           {tabs.map(tab => {
             const isActive = location.pathname === tab.path;
             return (
@@ -51,6 +52,7 @@ export default function BottomNav() {
               </NavLink>
             );
           })}
+          </div>
         </div>
       </div>
     </nav>
