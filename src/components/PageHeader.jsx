@@ -1,0 +1,31 @@
+import { useNavigate } from 'react-router-dom';
+
+export default function PageHeader({ title, subtitle, onBack, rightAction }) {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center gap-3">
+        {onBack && (
+          <button
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center card-hover"
+          >
+            <span className="material-symbols-outlined text-on-surface" style={{ fontSize: '22px' }}>
+              arrow_back
+            </span>
+          </button>
+        )}
+        <div>
+          <h1 className="text-lg font-bold text-on-surface">{title}</h1>
+          {subtitle && <p className="text-xs text-on-surface-variant mt-0.5">{subtitle}</p>}
+        </div>
+      </div>
+      {rightAction && (
+        <div className="flex items-center gap-2">
+          {rightAction}
+        </div>
+      )}
+    </div>
+  );
+}

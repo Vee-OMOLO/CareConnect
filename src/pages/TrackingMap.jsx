@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import PageHeader from '../components/PageHeader';
+import Card from '../components/Card';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -13,11 +15,11 @@ L.Icon.Default.mergeOptions({
 
 const caregiverIcon = new L.DivIcon({
   className: 'custom-marker',
-  html: `<div style="width:36px;height:36px;background:#041627;border-radius:12px;border:3px solid white;box-shadow:0 4px 16px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center">
-    <span class="material-symbols-outlined" style="color:white;font-size:20px">person</span>
+  html: `<div style="width:32px;height:32px;background:#041627;border-radius:10px;border:2.5px solid white;box-shadow:0 2px 12px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center">
+    <span class="material-symbols-outlined" style="color:white;font-size:18px">person</span>
   </div>`,
-  iconSize: [36, 36],
-  iconAnchor: [18, 18],
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
 });
 
 function LocationUpdater({ position }) {
@@ -30,7 +32,6 @@ function LocationUpdater({ position }) {
 
 export default function TrackingMap() {
   const navigate = useNavigate();
-  const [viewMode, setViewMode] = useState('map');
   const [position, setPosition] = useState(null);
   const [watching, setWatching] = useState(false);
   const [error, setError] = useState('');
@@ -76,59 +77,48 @@ export default function TrackingMap() {
   }
 
   const recentLocations = [
-    { name: 'Home', address: '123 Oak Street', time: 'Current', status: 'active', icon: 'home', color: 'bg-on-tertiary-container' },
-    { name: "Children's Hospital", address: '456 Medical Ave', time: 'Yesterday, 2:30 PM', status: 'visited', icon: 'local_hospital', color: 'bg-secondary' },
-    { name: 'City Pharmacy', address: '789 Main St', time: 'Mar 13, 11:00 AM', status: 'visited', icon: 'local_pharmacy', color: 'bg-primary' },
-    { name: 'Central Park', address: '101 Park Lane', time: 'Mar 12, 9:00 AM', status: 'visited', icon: 'park', color: 'bg-on-tertiary-container' },
+    { name: 'Home', address: '123 Oak Street', time: 'Current', status: 'active', icon: 'home', type: 'play' },
+    { name: "Children's Hospital", address: '456 Medical Ave', time: 'Yesterday', status: 'visited', icon: 'local_hospital', type: 'medicine' },
+    { name: 'City Pharmacy', address: '789 Main St', time: 'Mar 13', status: 'visited', icon: 'local_pharmacy', type: 'feeding' },
+    { name: 'Central Park', address: '101 Park Lane', time: 'Mar 12', status: 'visited', icon: 'park', type: 'play' },
   ];
 
   return (
-    <div className="pb-28 pt-4 px-5 min-h-dvh">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-7 animate-fade-in-up">
-        <button onClick={() => navigate(-1)} className="w-12 h-12 glass-card rounded-2xl flex items-center justify-center card-hover">
-          <span className="material-symbols-outlined text-on-surface" style={{ fontSize: '24px' }}>arrow_back</span>
-        </button>
-        <div className="flex-1">
-          <h1 className="text-xl font-bold text-on-surface">GPS Tracking</h1>
-          <p className="text-xs text-on-surface-variant mt-0.5">Real-time location sharing</p>
-        </div>
-        <div className="flex gap-1.5">
-          <button onClick={() => setViewMode('map')} className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${viewMode === 'map' ? 'bg-primary text-on-primary shadow-md shadow-primary/20' : 'glass-card text-on-surface-variant'}`}>Map</button>
-          <button onClick={() => setViewMode('list')} className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${viewMode === 'list' ? 'bg-primary text-on-primary shadow-md shadow-primary/20' : 'glass-card text-on-surface-variant'}`}>List</button>
-        </div>
-      </div>
+    <div className="pb-28 pt-5 px-5 min-h-dvh">
+      <PageHeader title="GPS Tracking" subtitle="Real-time location" onBack />
 
       {/* Live Tracking Toggle */}
-      <div className="glass-card rounded-3xl p-5 mb-6 flex items-center justify-between animate-fade-in-up card-hover" style={{ animationDelay: '0.05s' }}>
-        <div className="flex items-center gap-4">
-          <div className={`w-13 h-13 rounded-2xl flex items-center justify-center transition-all ${watching ? 'bg-on-tertiary-container' : 'bg-surface-container'}`}>
-            <span className={`material-symbols-outlined ${watching ? 'text-on-tertiary' : 'text-outline'}`} style={{ fontSize: '24px' }}>location_on</span>
+      <Card className="mb-4 animate-fade-in-up" padding="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${watching ? 'bg-health-bg' : 'bg-surface-container-low'}`}>
+              <span className={`material-symbols-outlined text-${watching ? 'health' : 'outline'}`} style={{ fontSize: '22px' }}>location_on</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-on-surface">Live Tracking</p>
+              <p className="text-xs text-outline">{watching ? 'Active' : 'Tap to start'}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-on-surface">Live GPS Tracking</p>
-            <p className="text-[11px] text-outline mt-0.5">{watching ? 'Tracking active' : 'Tap to start sharing'}</p>
-          </div>
+          <button onClick={toggleTracking} className={`w-12 h-7 rounded-full transition-all duration-200 relative ${watching ? 'bg-health' : 'bg-outline-variant'}`}>
+            <div className={`w-5.5 h-5.5 bg-white rounded-full absolute top-[3px] transition-all duration-200 shadow-sm ${watching ? 'left-[26px]' : 'left-[3px]'}`} style={{ width: '22px', height: '22px' }} />
+          </button>
         </div>
-        <button onClick={toggleTracking} className={`w-14 h-8 rounded-full transition-all duration-300 relative ${watching ? 'bg-on-tertiary-container' : 'bg-outline-variant'}`}>
-          <div className={`w-6 h-6 bg-white rounded-full absolute top-1 transition-all duration-300 shadow-md ${watching ? 'left-7' : 'left-1'}`}></div>
-        </button>
-      </div>
+      </Card>
 
       {error && (
-        <div className="flex items-center gap-3 bg-secondary-container/20 px-4 py-3 rounded-2xl mb-5 text-sm font-medium text-secondary animate-fade-in-up">
+        <div className="flex items-center gap-2 bg-medicine-bg px-3.5 py-2.5 rounded-xl mb-4 text-sm font-medium text-medicine animate-fade-in-up">
           <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>info</span>
           {error}
         </div>
       )}
 
-      {/* Map View */}
-      {viewMode === 'map' && position && (
-        <div className="glass-card rounded-3xl overflow-hidden mb-6 animate-scale-in" style={{ height: '340px' }}>
+      {/* Map */}
+      {position && (
+        <div className="rounded-2xl overflow-hidden mb-4 animate-scale-in" style={{ height: '300px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <MapContainer center={position} zoom={15} style={{ height: '100%', width: '100%' }} zoomControl={false}>
             <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={position} icon={caregiverIcon}>
-              <Popup><div className="text-center"><strong>Caregiver Location</strong><br />{position[0].toFixed(6)}, {position[1].toFixed(6)}</div></Popup>
+              <Popup><div className="text-center text-sm"><strong>Caregiver</strong><br />{position[0].toFixed(6)}, {position[1].toFixed(6)}</div></Popup>
             </Marker>
             <LocationUpdater position={position} />
           </MapContainer>
@@ -137,47 +127,40 @@ export default function TrackingMap() {
 
       {/* Coordinates */}
       {position && (
-        <div className="glass-card rounded-2xl p-4 mb-6 flex items-center justify-between animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <div>
-            <p className="text-[11px] text-outline font-medium">Current Coordinates</p>
-            <p className="text-sm font-mono font-semibold text-on-surface mt-0.5">{position[0].toFixed(6)}, {position[1].toFixed(6)}</p>
+        <Card className="mb-4 animate-fade-in-up" padding="p-3.5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] text-outline font-medium">Coordinates</p>
+              <p className="text-sm font-mono font-semibold text-on-surface">{position[0].toFixed(6)}, {position[1].toFixed(6)}</p>
+            </div>
+            <button onClick={copyMapsLink} className="px-3 py-1.5 rounded-lg bg-surface-container-low text-xs font-semibold text-on-surface card-hover">
+              Copy
+            </button>
           </div>
-          <button onClick={copyMapsLink} className="glass-input px-3.5 py-2 rounded-xl text-xs font-semibold text-on-surface flex items-center gap-1.5 card-hover">
-            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>content_copy</span>
-            Copy
-          </button>
-        </div>
+        </Card>
       )}
 
-      {/* Period Tabs */}
-      <div className="flex gap-1.5 mb-5 bg-surface-container rounded-2xl p-1 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-        {['Today', 'This Week', 'All'].map((period, i) => (
-          <button key={period} className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all ${i === 0 ? 'bg-white shadow-sm text-on-surface' : 'text-outline'}`}>
-            {period}
-          </button>
-        ))}
-      </div>
-
       {/* Location History */}
-      <div className="space-y-3 stagger-children animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+      <h2 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-3">History</h2>
+      <div className="space-y-2 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
         {recentLocations.map(loc => (
-          <div key={loc.name} className="glass-card rounded-2xl p-4 flex items-center gap-3.5 card-hover animate-fade-in-up">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${loc.color}`}>
-              <span className="material-symbols-outlined text-on-secondary" style={{ fontSize: '22px' }}>{loc.icon}</span>
+          <Card key={loc.name} className={`activity-${loc.type}-border`} padding="p-3.5">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-lg activity-${loc.type}-bg flex items-center justify-center flex-shrink-0`}>
+                <span className={`material-symbols-outlined text-${loc.type}`} style={{ fontSize: '20px' }}>{loc.icon}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-on-surface">{loc.name}</p>
+                <p className="text-xs text-outline">{loc.address}</p>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${loc.status === 'active' ? 'bg-health-bg text-health' : 'bg-surface-container-low text-outline'}`}>
+                  {loc.status === 'active' ? 'Active' : 'Visited'}
+                </span>
+                <p className="text-[10px] text-outline mt-0.5">{loc.time}</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-on-surface">{loc.name}</p>
-              <p className="text-[11px] text-outline mt-0.5">{loc.address}</p>
-            </div>
-            <div className="text-right flex-shrink-0">
-              <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${
-                loc.status === 'active' ? 'bg-on-tertiary-container/10 text-on-tertiary-container' : 'bg-surface-container text-outline'
-              }`}>
-                {loc.status === 'active' ? 'Active' : 'Visited'}
-              </span>
-              <p className="text-[10px] text-outline mt-1">{loc.time}</p>
-            </div>
-          </div>
+          </Card>
         ))}
       </div>
     </div>

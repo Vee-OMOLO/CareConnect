@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PageHeader from '../components/PageHeader';
+import Card from '../components/Card';
 
 const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -28,90 +30,80 @@ export default function Calendar() {
   }
 
   const events = [
-    { day: 8, color: 'bg-primary', label: 'Med' },
-    { day: 12, color: 'bg-secondary', label: 'Appt' },
-    { day: 15, color: 'bg-primary', label: 'Today' },
-    { day: 20, color: 'bg-primary', label: 'Med' },
-    { day: 25, color: 'bg-secondary', label: 'Check' },
+    { day: 8, type: 'medicine', label: 'Med' },
+    { day: 12, type: 'health', label: 'Appt' },
+    { day: 15, type: 'feeding', label: 'Today' },
+    { day: 20, type: 'medicine', label: 'Med' },
+    { day: 25, type: 'health', label: 'Check' },
   ];
 
   const upcomingEvents = [
-    { title: 'Blood pressure check', time: 'Today, 2:00 PM', icon: 'favorite', color: 'bg-secondary-container text-on-secondary-container' },
-    { title: 'Medication refill reminder', time: 'Tomorrow, 9:00 AM', icon: 'medication', color: 'bg-primary-container text-on-primary-container' },
-    { title: 'Doctor appointment', time: 'Mar 20, 10:30 AM', icon: 'local_hospital', color: 'bg-on-tertiary-container/10 text-on-tertiary-container' },
+    { title: 'Blood pressure check', time: 'Today, 2:00 PM', type: 'health', icon: 'favorite' },
+    { title: 'Medication refill reminder', time: 'Tomorrow, 9:00 AM', type: 'medicine', icon: 'medication' },
+    { title: 'Doctor appointment', time: 'Mar 20, 10:30 AM', type: 'health', icon: 'local_hospital' },
   ];
 
   return (
-    <div className="pb-28 pt-4 px-5 min-h-dvh">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-7 animate-fade-in-up">
-        <button onClick={() => navigate(-1)} className="w-12 h-12 glass-card rounded-2xl flex items-center justify-center card-hover">
-          <span className="material-symbols-outlined text-on-surface" style={{ fontSize: '24px' }}>arrow_back</span>
-        </button>
-        <div>
-          <h1 className="text-xl font-bold text-on-surface">Calendar</h1>
-          <p className="text-xs text-on-surface-variant mt-0.5">Schedule & reminders</p>
-        </div>
-      </div>
+    <div className="pb-28 pt-5 px-5 min-h-dvh">
+      <PageHeader title="Calendar" subtitle="Schedule & reminders" onBack />
 
       {/* Calendar Card */}
-      <div className="glass-card rounded-3xl p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
-        {/* Month Navigation */}
-        <div className="flex items-center justify-between mb-5">
-          <button className="w-10 h-10 glass-card rounded-xl flex items-center justify-center card-hover">
-            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '22px' }}>chevron_left</span>
+      <Card className="mb-5 animate-fade-in-up" padding="p-5">
+        <div className="flex items-center justify-between mb-4">
+          <button className="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center card-hover">
+            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '20px' }}>chevron_left</span>
           </button>
-          <h2 className="text-lg font-semibold text-on-surface">{months[month]} {year}</h2>
-          <button className="w-10 h-10 glass-card rounded-xl flex items-center justify-center card-hover">
-            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '22px' }}>chevron_right</span>
+          <h2 className="text-base font-bold text-on-surface">{months[month]} {year}</h2>
+          <button className="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center card-hover">
+            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '20px' }}>chevron_right</span>
           </button>
         </div>
 
-        {/* Days of Week */}
-        <div className="grid grid-cols-7 gap-1.5 mb-3">
+        <div className="grid grid-cols-7 gap-1 mb-2">
           {daysOfWeek.map((d, i) => (
-            <div key={i} className="text-center text-[11px] font-semibold text-outline py-1.5">{d}</div>
+            <div key={i} className="text-center text-[11px] font-semibold text-outline py-1">{d}</div>
           ))}
         </div>
 
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-1.5">
+        <div className="grid grid-cols-7 gap-1">
           {calendarDays.map((d, i) => {
             const event = events.find(e => e.day === d.day && d.currentMonth);
             return (
               <button
                 key={i}
-                className={`relative aspect-square flex flex-col items-center justify-center rounded-2xl text-sm transition-all card-hover ${
-                  d.isToday ? 'bg-primary text-on-primary font-bold shadow-lg shadow-primary/20' :
-                  d.currentMonth ? 'text-on-surface hover:bg-surface-container' :
-                  'text-outline/30'
+                className={`relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm transition-all card-hover ${
+                  d.isToday ? 'bg-primary text-on-primary font-bold' :
+                  d.currentMonth ? 'text-on-surface hover:bg-surface-container-low' :
+                  'text-outline/25'
                 }`}
               >
                 {d.day}
                 {event && !d.isToday && (
-                  <div className={`absolute bottom-1.5 w-1.5 h-1.5 rounded-full ${event.color}`}></div>
+                  <div className={`absolute bottom-1 w-1.5 h-1.5 rounded-full bg-${event.type}`} />
                 )}
               </button>
             );
           })}
         </div>
-      </div>
+      </Card>
 
       {/* Upcoming Events */}
-      <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-        <h2 className="text-lg font-semibold text-on-surface mb-4">Upcoming Events</h2>
-        <div className="space-y-3 stagger-children">
+      <div className="animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+        <h2 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-3">Upcoming</h2>
+        <div className="space-y-2">
           {upcomingEvents.map((event, i) => (
-            <div key={i} className="glass-card rounded-2xl p-4 flex items-center gap-3.5 card-hover animate-fade-in-up">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${event.color}`}>
-                <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>{event.icon}</span>
+            <Card key={i} className={`activity-${event.type}-border`} padding="p-3.5">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg activity-${event.type}-bg flex items-center justify-center flex-shrink-0`}>
+                  <span className={`material-symbols-outlined text-${event.type}`} style={{ fontSize: '20px' }}>{event.icon}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-on-surface">{event.title}</p>
+                  <p className="text-xs text-outline mt-0.5">{event.time}</p>
+                </div>
+                <span className="material-symbols-outlined text-outline" style={{ fontSize: '18px' }}>chevron_right</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-on-surface">{event.title}</p>
-                <p className="text-[11px] text-outline mt-0.5">{event.time}</p>
-              </div>
-              <span className="material-symbols-outlined text-outline flex-shrink-0" style={{ fontSize: '18px' }}>chevron_right</span>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

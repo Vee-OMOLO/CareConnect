@@ -28,14 +28,7 @@ export default function App() {
   const { currentUser, userRole } = useAuth();
 
   return (
-    <div className="min-h-dvh bg-background relative">
-      {/* Mesh Background */}
-      <div className="mesh-bg">
-        <div className="mesh-blob blob-1"></div>
-        <div className="mesh-blob blob-2"></div>
-        <div className="mesh-blob blob-3"></div>
-      </div>
-
+    <div className="min-h-dvh bg-surface">
       {/* App Shell - mobile-width container */}
       <div className="app-shell">
         <Routes>

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import PageHeader from '../components/PageHeader';
+import Card from '../components/Card';
 
 const defaultContacts = [
   { name: 'Dr. Sarah Smith', role: 'Primary Care Physician', phone: '(555) 123-4567', isPrimary: true },
@@ -64,129 +66,126 @@ export default function SafetyVault() {
   }
 
   return (
-    <div className="pb-28 pt-4 px-5 min-h-dvh">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-7 animate-fade-in-up">
-        <button onClick={() => navigate(-1)} className="w-12 h-12 glass-card rounded-2xl flex items-center justify-center card-hover">
-          <span className="material-symbols-outlined text-on-surface" style={{ fontSize: '24px' }}>arrow_back</span>
-        </button>
-        <div className="flex-1">
-          <h1 className="text-xl font-bold text-on-surface">Safety Vault</h1>
-          <p className="text-xs text-on-surface-variant mt-0.5">Emergency contacts & medical info</p>
-        </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card">
-          <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-on-tertiary-container' : 'bg-secondary'}`}></div>
-          <span className="text-[10px] font-semibold text-outline">{isOnline ? 'Online' : 'Offline'}</span>
-        </div>
-      </div>
+    <div className="pb-28 pt-5 px-5 min-h-dvh">
+      <PageHeader
+        title="Safety Vault"
+        subtitle="Emergency contacts & medical info"
+        onBack
+        rightAction={
+          <span className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${isOnline ? 'bg-health-bg text-health' : 'bg-medicine-bg text-medicine'}`}>
+            {isOnline ? 'Online' : 'Offline'}
+          </span>
+        }
+      />
 
-      {/* SOS Button */}
-      <button className="w-full bg-secondary text-on-secondary py-5 rounded-2xl font-bold text-[17px] flex items-center justify-center gap-3 mb-7 sos-glow hover:opacity-90 transition-opacity animate-fade-in-up card-hover" style={{ animationDelay: '0.05s' }}>
-        <span className="material-symbols-outlined" style={{ fontSize: '26px' }}>emergency</span>
+      {/* SOS */}
+      <button className="w-full bg-secondary text-on-secondary py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 mb-5 sos-glow card-hover animate-fade-in-up">
+        <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>emergency</span>
         Emergency SOS
       </button>
 
       {/* Emergency Contacts */}
-      <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-on-surface">Emergency Contacts</h2>
-          <button onClick={() => setShowAddContact(true)} className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center card-hover">
-            <span className="material-symbols-outlined text-primary" style={{ fontSize: '22px' }}>add</span>
+      <div className="mb-5 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider">Contacts</h2>
+          <button onClick={() => setShowAddContact(true)} className="w-8 h-8 bg-primary/8 rounded-lg flex items-center justify-center card-hover">
+            <span className="material-symbols-outlined text-primary" style={{ fontSize: '20px' }}>add</span>
           </button>
         </div>
-        <div className="space-y-3 stagger-children">
-          {contacts.map((contact, i) => (
-            <div key={i} className="glass-card rounded-2xl p-4 flex items-center gap-3.5 card-hover animate-fade-in-up">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${contact.isPrimary ? 'bg-secondary-container' : 'bg-primary-container'}`}>
-                <span className={`material-symbols-outlined ${contact.isPrimary ? 'text-on-secondary-container' : 'text-on-primary-container'}`} style={{ fontSize: '22px' }}>person</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-semibold text-on-surface truncate">{contact.name}</p>
-                  {contact.isPrimary && <span className="text-[9px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full font-semibold">Primary</span>}
+        <Card padding="p-0">
+          <div className="divide-y divide-outline-variant/15">
+            {contacts.map((contact, i) => (
+              <div key={i} className="flex items-center gap-3 px-4 py-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${contact.isPrimary ? 'bg-medicine-bg' : 'bg-primary-container'}`}>
+                  <span className={`material-symbols-outlined ${contact.isPrimary ? 'text-medicine' : 'text-on-primary-container'}`} style={{ fontSize: '20px' }}>person</span>
                 </div>
-                <p className="text-[11px] text-outline mt-0.5">{contact.role}</p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-on-surface truncate">{contact.name}</p>
+                    {contact.isPrimary && <span className="text-[9px] bg-medicine-bg text-medicine px-1.5 py-0.5 rounded-full font-semibold">Primary</span>}
+                  </div>
+                  <p className="text-xs text-outline mt-0.5">{contact.role}</p>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <a href={`tel:${contact.phone}`} className="w-9 h-9 bg-health-bg rounded-lg flex items-center justify-center card-hover">
+                    <span className="material-symbols-outlined text-health" style={{ fontSize: '18px' }}>call</span>
+                  </a>
+                  {!contact.isPrimary && (
+                    <button onClick={() => removeContact(i)} className="w-9 h-9 bg-surface-container-low rounded-lg flex items-center justify-center card-hover">
+                      <span className="material-symbols-outlined text-outline" style={{ fontSize: '18px' }}>close</span>
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <a href={`tel:${contact.phone}`} className="w-10 h-10 bg-on-tertiary-container/10 rounded-xl flex items-center justify-center card-hover">
-                  <span className="material-symbols-outlined text-on-tertiary-container" style={{ fontSize: '20px' }}>call</span>
-                </a>
-                {!contact.isPrimary && (
-                  <button onClick={() => removeContact(i)} className="w-10 h-10 bg-error-container/30 rounded-xl flex items-center justify-center card-hover">
-                    <span className="material-symbols-outlined text-error" style={{ fontSize: '20px' }}>delete</span>
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Card>
       </div>
 
       {/* Medical Information */}
-      <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-        <h2 className="text-lg font-semibold text-on-surface mb-4">Medical Information</h2>
-        <div className="glass-card rounded-2xl overflow-hidden">
-          {medicalInfo.map((info, i) => (
-            <div key={i} className={`flex items-center gap-3.5 px-5 py-4 ${i < medicalInfo.length - 1 ? 'border-b border-outline-variant/20' : ''}`}>
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-primary" style={{ fontSize: '20px' }}>{info.icon}</span>
+      <div className="mb-5 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+        <h2 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-3">Medical Info</h2>
+        <Card padding="p-0">
+          <div className="divide-y divide-outline-variant/15">
+            {medicalInfo.map((info, i) => (
+              <div key={i} className="flex items-center gap-3 px-4 py-3">
+                <div className="w-9 h-9 bg-surface-container-low rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '18px' }}>{info.icon}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-outline font-medium">{info.label}</p>
+                  <p className="text-sm font-semibold text-on-surface">{info.value}</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[11px] text-outline font-medium">{info.label}</p>
-                <p className="text-sm font-semibold text-on-surface mt-0.5">{info.value}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Card>
       </div>
 
       {/* Medical Documents */}
-      <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-        <h2 className="text-lg font-semibold text-on-surface mb-4">Medical Documents</h2>
-        <div className="space-y-3 stagger-children">
+      <div className="mb-5 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+        <h2 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-3">Documents</h2>
+        <div className="space-y-2">
           {[
-            { name: 'Insurance Card', icon: 'credit_card', color: 'bg-primary-container text-on-primary-container' },
-            { name: 'Advance Directive', icon: 'description', color: 'bg-on-tertiary-container/10 text-on-tertiary-container' },
-            { name: 'Recent Lab Results', icon: 'lab', color: 'bg-secondary-container text-on-secondary-container' },
+            { name: 'Insurance Card', icon: 'credit_card', type: 'primary' },
+            { name: 'Advance Directive', icon: 'description', type: 'play' },
+            { name: 'Recent Lab Results', icon: 'lab', type: 'medicine' },
           ].map((doc, i) => (
-            <button key={i} className="glass-card rounded-2xl p-4 flex items-center gap-3.5 w-full text-left card-hover animate-fade-in-up">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${doc.color}`}>
-                <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>{doc.icon}</span>
+            <Card key={i} className={`activity-${doc.type}-border`} padding="p-3.5">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg activity-${doc.type}-bg flex items-center justify-center flex-shrink-0`}>
+                  <span className={`material-symbols-outlined text-${doc.type}`} style={{ fontSize: '20px' }}>{doc.icon}</span>
+                </div>
+                <span className="text-sm font-semibold text-on-surface flex-1">{doc.name}</span>
+                <span className="material-symbols-outlined text-outline" style={{ fontSize: '18px' }}>chevron_right</span>
               </div>
-              <span className="text-sm font-semibold text-on-surface flex-1">{doc.name}</span>
-              <span className="material-symbols-outlined text-outline" style={{ fontSize: '20px' }}>chevron_right</span>
-            </button>
+            </Card>
           ))}
         </div>
       </div>
 
       {/* Offline Notice */}
       {!isOnline && (
-        <div className="glass-card rounded-2xl p-4 bg-secondary-container/10 border border-secondary/20 animate-fade-in-up mb-6">
+        <Card className="mb-5 bg-medicine-bg/30 border border-medicine/15 animate-fade-in-up" padding="p-3.5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-secondary/15 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="material-symbols-outlined text-secondary" style={{ fontSize: '22px' }}>cloud_off</span>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-on-surface">Offline Mode</p>
-              <p className="text-[11px] text-on-surface-variant mt-0.5">Contacts saved locally. Will sync when online.</p>
-            </div>
+            <span className="material-symbols-outlined text-medicine" style={{ fontSize: '20px' }}>cloud_off</span>
+            <p className="text-sm text-on-surface">Offline — contacts saved locally</p>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Add Contact Modal */}
       {showAddContact && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowAddContact(false)}></div>
-          <div className="relative glass-card rounded-t-[32px] w-full max-w-[430px] p-7 pb-10 animate-slide-up">
-            <div className="w-10 h-1 bg-outline-variant rounded-full mx-auto mb-6"></div>
-            <h2 className="text-xl font-bold text-on-surface mb-6">Add Emergency Contact</h2>
-            <div className="space-y-4">
-              <input value={newContact.name} onChange={(e) => setNewContact({ ...newContact, name: e.target.value })} placeholder="Contact name" className="glass-input w-full px-5 py-4 rounded-2xl text-on-surface placeholder:text-outline text-[15px]" />
-              <input value={newContact.role} onChange={(e) => setNewContact({ ...newContact, role: e.target.value })} placeholder="Relationship (e.g. Son, Doctor)" className="glass-input w-full px-5 py-4 rounded-2xl text-on-surface placeholder:text-outline text-[15px]" />
-              <input type="tel" value={newContact.phone} onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })} placeholder="Phone number" className="glass-input w-full px-5 py-4 rounded-2xl text-on-surface placeholder:text-outline text-[15px]" />
-              <button onClick={addContact} disabled={!newContact.name || !newContact.phone} className="w-full bg-primary text-on-primary py-4.5 rounded-2xl font-semibold text-[16px] hover:opacity-90 transition-opacity disabled:opacity-50 mt-2">
+          <div className="absolute inset-0 bg-black/30" onClick={() => setShowAddContact(false)} />
+          <div className="relative bg-white rounded-t-2xl w-full max-w-[430px] p-6 pb-8 animate-slide-up shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+            <div className="w-10 h-1 bg-outline-variant/40 rounded-full mx-auto mb-5" />
+            <h2 className="text-lg font-bold text-on-surface mb-5">Add Contact</h2>
+            <div className="space-y-3">
+              <input value={newContact.name} onChange={(e) => setNewContact({ ...newContact, name: e.target.value })} placeholder="Contact name" className="glass-input w-full px-4 py-3.5 rounded-xl text-on-surface" />
+              <input value={newContact.role} onChange={(e) => setNewContact({ ...newContact, role: e.target.value })} placeholder="Relationship" className="glass-input w-full px-4 py-3.5 rounded-xl text-on-surface" />
+              <input type="tel" value={newContact.phone} onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })} placeholder="Phone number" className="glass-input w-full px-4 py-3.5 rounded-xl text-on-surface" />
+              <button onClick={addContact} disabled={!newContact.name || !newContact.phone} className="w-full bg-primary text-on-primary py-3.5 rounded-xl font-semibold text-base disabled:opacity-40 mt-1">
                 Save Contact
               </button>
             </div>

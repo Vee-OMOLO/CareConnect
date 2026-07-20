@@ -7,77 +7,60 @@ export default function RoleSelection() {
 
   function handleSelect(role) {
     setUserRole(role);
-    if (role === 'parent') {
-      navigate('/parent');
-    } else {
-      navigate('/caregiver');
-    }
+    navigate(role === 'parent' ? '/parent' : '/caregiver');
   }
 
   return (
-    <div className="min-h-dvh flex flex-col relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 auth-gradient-bg">
-        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-primary/20 blur-[120px] animate-float-slow"></div>
-        <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary/15 blur-[100px] animate-float-slow-reverse"></div>
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 py-16 bg-surface">
+      {/* Logo */}
+      <div className="mb-10 animate-fade-in-up">
+        <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3">
+          <span className="material-symbols-outlined text-on-primary" style={{ fontSize: '30px' }}>health_and_safety</span>
+        </div>
+        <h1 className="text-3xl font-bold text-on-surface text-center tracking-tight">CareConnect</h1>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-16">
-        {/* Logo */}
-        <div className="mb-12 animate-fade-in-up">
-          <div className="flex items-center justify-center gap-3.5 mb-3">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-container rounded-[20px] flex items-center justify-center shadow-2xl shadow-primary/30 animate-logo-pulse">
-              <span className="material-symbols-outlined text-on-primary" style={{ fontSize: '34px' }}>health_and_safety</span>
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+          <h2 className="text-2xl font-bold text-on-surface mb-2">Who are you?</h2>
+          <p className="text-sm text-on-surface-variant">Select your role to get started</p>
+        </div>
+
+        <div className="space-y-3">
+          <button
+            onClick={() => handleSelect('parent')}
+            className="auth-card w-full p-5 flex items-center gap-4 text-left active:scale-[0.98] transition-transform animate-fade-in-up"
+            style={{ animationDelay: '0.1s' }}
+          >
+            <div className="w-14 h-14 bg-primary/8 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <span className="material-symbols-outlined text-primary" style={{ fontSize: '28px' }}>family_restroom</span>
             </div>
-          </div>
-          <h1 className="text-4xl font-bold text-on-surface text-center tracking-tight">CareConnect</h1>
+            <div className="flex-1">
+              <h3 className="text-base font-bold text-on-surface">Parent / Guardian</h3>
+              <p className="text-sm text-on-surface-variant mt-0.5">Monitor activity, view reports, track visits</p>
+            </div>
+            <span className="material-symbols-outlined text-outline" style={{ fontSize: '22px' }}>chevron_right</span>
+          </button>
+
+          <button
+            onClick={() => handleSelect('caregiver')}
+            className="auth-card w-full p-5 flex items-center gap-4 text-left active:scale-[0.98] transition-transform animate-fade-in-up"
+            style={{ animationDelay: '0.15s' }}
+          >
+            <div className="w-14 h-14 bg-secondary/8 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <span className="material-symbols-outlined text-secondary" style={{ fontSize: '28px' }}>volunteer_activism</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-base font-bold text-on-surface">Caregiver</h3>
+              <p className="text-sm text-on-surface-variant mt-0.5">Log activities, manage tasks, send alerts</p>
+            </div>
+            <span className="material-symbols-outlined text-outline" style={{ fontSize: '22px' }}>chevron_right</span>
+          </button>
         </div>
 
-        <div className="w-full max-w-sm">
-          {/* Title */}
-          <div className="text-center mb-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <h2 className="text-[28px] font-bold text-on-surface mb-3">Who are you?</h2>
-            <p className="text-on-surface-variant text-[15px]">Select your role to personalize your experience</p>
-          </div>
-
-          {/* Role Cards */}
-          <div className="space-y-4 stagger-children">
-            {/* Parent Card */}
-            <button
-              onClick={() => handleSelect('parent')}
-              className="glass-card auth-card w-full p-6 rounded-[28px] flex items-center gap-5 text-left hover:scale-[1.02] transition-all duration-300 cursor-pointer group animate-fade-in-up"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-primary" style={{ fontSize: '32px' }}>family_restroom</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-on-surface">Parent / Guardian</h3>
-                <p className="text-sm text-on-surface-variant mt-1">Monitor activity, view reports, track visits</p>
-              </div>
-              <div className="w-10 h-10 bg-surface-container rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 transition-colors">
-                <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors" style={{ fontSize: '22px' }}>chevron_right</span>
-              </div>
-            </button>
-
-            {/* Caregiver Card */}
-            <button
-              onClick={() => handleSelect('caregiver')}
-              className="glass-card auth-card w-full p-6 rounded-[28px] flex items-center gap-5 text-left hover:scale-[1.02] transition-all duration-300 cursor-pointer group animate-fade-in-up"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary/15 to-secondary/5 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-secondary" style={{ fontSize: '32px' }}>volunteer_activism</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-on-surface">Caregiver</h3>
-                <p className="text-sm text-on-surface-variant mt-1">Log activities, manage tasks, send alerts</p>
-              </div>
-              <div className="w-10 h-10 bg-surface-container rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-secondary/10 transition-colors">
-                <span className="material-symbols-outlined text-outline group-hover:text-secondary transition-colors" style={{ fontSize: '22px' }}>chevron_right</span>
-              </div>
-            </button>
-          </div>
-        </div>
+        <p className="text-center text-[11px] text-outline mt-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          Works offline — data syncs when connected
+        </p>
       </div>
     </div>
   );
