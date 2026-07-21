@@ -3,13 +3,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyCIvYCTi2TjjqN9niwAF_v_xyc4c5aEm4E",
+  authDomain: "kabu-ai-1d6cf.firebaseapp.com",
+  projectId: "kabu-ai-1d6cf",
+  storageBucket: "kabu-ai-1d6cf.firebasestorage.app",
+  messagingSenderId: "311880305149",
+  appId: "1:311880305149:web:903a0c3360d69ef5b9b194",
+  measurementId: "G-0GF9EM8JNV"
 };
 
 const app = initializeApp(firebaseConfig);
