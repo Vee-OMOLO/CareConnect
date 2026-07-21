@@ -1,64 +1,106 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
-  const { setRole } = useAuth();
+  const { currentUser, setRole, setChild } = useAuth();
+  const [childName, setChildNameInput] = useState('');
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  function handleSelect(role) {
-    setRole(role);
-    navigate(role === 'parent' ? '/parent' : '/caregiver');
+  async function handleSelect(role) {
+    if (!childName.trim()) {
+      setError("Please enter your child's name");
+      return;
+    }
+    setError('');
+    setSaving(true);
+    try {
+      if (currentUser) {
+        await setDoc(doc(db, 'users', currentUser.uid), {
+          role,
+          childName: childName.trim(),
+          email: currentUser.email,
+          createdAt: serverTimestamp(),
+        }, { merge: true });
+      }
+      setRole(role);
+      setChild(childName.trim());
+      navigate(role === 'parent' ? '/parent' : '/caregiver');
+    } catch (e) {
+      console.error('Failed to save profile:', e);
+      setSaving(false);
+    }
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-5 sm:px-8 py-12 sm:py-16 bg-surface">
-      {/* Logo */}
-      <div className="mb-8 sm:mb-10 animate-fade-in-up">
-        <div className="w-14 h-14 sm:w-16 sm:h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-          <span className="material-symbols-outlined text-on-primary" style={{ fontSize: '30px' }}>health_and_safety</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-on-surface text-center tracking-tight">CareConnect</h1>
-      </div>
-
-      <div className="w-full max-w-sm sm:max-w-md">
-        <div className="text-center mb-8 sm:mb-10 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
-          <h2 className="text-2xl sm:text-3xl font-bold text-on-surface mb-2 sm:mb-3">Who are you?</h2>
-          <p className="text-sm sm:text-base text-on-surface-variant">Select your role to get started</p>
+    <div className="auth-page bg-surface">
+      <div className="w-full max-w-sm animate-fade-in-up">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <span className="material-symbols-outlined text-on-primary text-[28px]">health_and_safety</span>
+          </div>
+          <h1 className="text-3xl font-bold text-on-surface tracking-tight">CareConnect</h1>
         </div>
 
-        <div className="space-y-3 sm:space-y-4">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-on-surface mb-1">Who are you?</h2>
+          <p className="text-sm text-on-surface-variant">Select your role to get started</p>
+        </div>
+
+        {error && (
+          <div className="flex items-center gap-2 bg-error-container text-on-error-container px-4 py-3 rounded-xl mb-4 text-sm font-medium animate-shake">
+            <span className="material-symbols-outlined text-[16px]">error</span>
+            {error}
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">Child's Name</label>
+          <input
+            value={childName}
+            onChange={(e) => setChildNameInput(e.target.value)}
+            placeholder="e.g. Olivia"
+            className="auth-input"
+          />
+        </div>
+
+        <div className="flex flex-col gap-3">
           <button
             onClick={() => handleSelect('parent')}
-            className="auth-card w-full p-5 sm:p-6 flex items-center gap-4 sm:gap-5 text-left active:scale-[0.98] transition-transform animate-fade-in-up"
-            style={{ animationDelay: '0.1s' }}
+            disabled={saving}
+            className="auth-card w-full p-4 flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
           >
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/8 rounded-2xl flex items-center justify-center flex-shrink-0">
-              <span className="material-symbols-outlined text-primary" style={{ fontSize: '28px' }}>family_restroom</span>
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <span className="material-symbols-outlined text-primary text-[24px]">family_restroom</span>
             </div>
-            <div className="flex-1">
-              <h3 className="text-base sm:text-lg font-bold text-on-surface">Parent / Guardian</h3>
-              <p className="text-sm sm:text-base text-on-surface-variant mt-0.5">Monitor activity, view reports, track visits</p>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-bold text-on-surface">Parent / Guardian</h3>
+              <p className="text-xs text-on-surface-variant mt-0.5">Monitor activity, view reports, track visits</p>
             </div>
-            <span className="material-symbols-outlined text-outline" style={{ fontSize: '24px' }}>chevron_right</span>
+            <span className="material-symbols-outlined text-outline text-[20px] flex-shrink-0">chevron_right</span>
           </button>
 
           <button
             onClick={() => handleSelect('caregiver')}
-            className="auth-card w-full p-5 sm:p-6 flex items-center gap-4 sm:gap-5 text-left active:scale-[0.98] transition-transform animate-fade-in-up"
-            style={{ animationDelay: '0.15s' }}
+            disabled={saving}
+            className="auth-card w-full p-4 flex items-center gap-4 text-left active:scale-[0.98] transition-transform"
           >
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-secondary/8 rounded-2xl flex items-center justify-center flex-shrink-0">
-              <span className="material-symbols-outlined text-secondary" style={{ fontSize: '28px' }}>volunteer_activism</span>
+            <div className="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <span className="material-symbols-outlined text-secondary text-[24px]">volunteer_activism</span>
             </div>
-            <div className="flex-1">
-              <h3 className="text-base sm:text-lg font-bold text-on-surface">Caregiver</h3>
-              <p className="text-sm sm:text-base text-on-surface-variant mt-0.5">Log activities, manage tasks, send alerts</p>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-bold text-on-surface">Caregiver</h3>
+              <p className="text-xs text-on-surface-variant mt-0.5">Log activities, manage tasks, send alerts</p>
             </div>
-            <span className="material-symbols-outlined text-outline" style={{ fontSize: '24px' }}>chevron_right</span>
+            <span className="material-symbols-outlined text-outline text-[20px] flex-shrink-0">chevron_right</span>
           </button>
         </div>
 
-        <p className="text-center text-[11px] sm:text-xs text-outline mt-8 sm:mt-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <p className="text-center text-[11px] text-outline mt-8">
           Works offline — data syncs when connected
         </p>
       </div>

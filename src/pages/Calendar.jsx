@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import PageHeader from '../components/PageHeader';
-import Card from '../components/Card';
 
 const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export default function Calendar() {
-  const [currentDate] = useState(new Date(2025, 2, 15));
+  const [currentDate] = useState(new Date());
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -20,7 +19,7 @@ export default function Calendar() {
     calendarDays.push({ day: daysInPrevMonth - i, currentMonth: false });
   }
   for (let i = 1; i <= daysInMonth; i++) {
-    calendarDays.push({ day: i, currentMonth: true, isToday: i === 15 });
+    calendarDays.push({ day: i, currentMonth: true, isToday: i === currentDate.getDate() });
   }
   const remaining = 42 - calendarDays.length;
   for (let i = 1; i <= remaining; i++) {
@@ -30,7 +29,6 @@ export default function Calendar() {
   const events = [
     { day: 8, type: 'medicine', label: 'Med' },
     { day: 12, type: 'health', label: 'Appt' },
-    { day: 15, type: 'feeding', label: 'Today' },
     { day: 20, type: 'medicine', label: 'Med' },
     { day: 25, type: 'health', label: 'Check' },
   ];
@@ -42,24 +40,24 @@ export default function Calendar() {
   ];
 
   return (
-    <div className="pb-28 pt-6 px-4 sm:px-6 md:px-8 min-h-dvh">
+    <div className="flex flex-col gap-4">
       <PageHeader title="Calendar" subtitle="Schedule & reminders" onBack />
 
-      {/* Calendar Card */}
-      <Card className="mb-5 sm:mb-6 animate-fade-in-up" padding="p-4 sm:p-5 md:p-6">
-        <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <button className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-surface-container-low flex items-center justify-center card-hover">
-            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '22px' }}>chevron_left</span>
+      {/* Calendar Grid */}
+      <div className="card p-4 animate-fade-in-up">
+        <div className="flex items-center justify-between mb-3">
+          <button className="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center card-interactive">
+            <span className="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_left</span>
           </button>
-          <h2 className="text-base sm:text-lg font-bold text-on-surface">{months[month]} {year}</h2>
-          <button className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-surface-container-low flex items-center justify-center card-hover">
-            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '22px' }}>chevron_right</span>
+          <h2 className="text-base font-bold text-on-surface">{months[month]} {year}</h2>
+          <button className="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center card-interactive">
+            <span className="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="grid grid-cols-7 gap-1 mb-1">
           {daysOfWeek.map((d, i) => (
-            <div key={i} className="text-center text-[11px] sm:text-xs font-semibold text-outline py-1">{d}</div>
+            <div key={i} className="text-center text-[11px] font-semibold text-outline py-1">{d}</div>
           ))}
         </div>
 
@@ -69,7 +67,7 @@ export default function Calendar() {
             return (
               <button
                 key={i}
-                className={`relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm sm:text-base transition-all card-hover ${
+                className={`relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm transition-all card-interactive ${
                   d.isToday ? 'bg-primary text-on-primary font-bold' :
                   d.currentMonth ? 'text-on-surface hover:bg-surface-container-low' :
                   'text-outline/25'
@@ -77,31 +75,31 @@ export default function Calendar() {
               >
                 {d.day}
                 {event && !d.isToday && (
-                  <div className={`absolute bottom-1 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-${event.type}`} />
+                  <div className={`absolute bottom-1 w-1.5 h-1.5 rounded-full bg-${event.type}`} />
                 )}
               </button>
             );
           })}
         </div>
-      </Card>
+      </div>
 
-      {/* Upcoming Events */}
-      <div className="animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
-        <h2 className="text-xs sm:text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-3 sm:mb-4">Upcoming</h2>
-        <div className="space-y-2 sm:space-y-3">
+      {/* Upcoming */}
+      <div className="animate-fade-in-up" style={{ animationDelay: '0.03s' }}>
+        <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Upcoming</h2>
+        <div className="flex flex-col gap-2">
           {upcomingEvents.map((event, i) => (
-            <Card key={i} className={`activity-${event.type}-border`} padding="p-3.5 sm:p-4">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-lg activity-${event.type}-bg flex items-center justify-center flex-shrink-0`}>
-                  <span className={`material-symbols-outlined text-${event.type}`} style={{ fontSize: '20px' }}>{event.icon}</span>
+            <div key={i} className={`card p-3 activity-${event.type}-border`}>
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-lg activity-${event.type}-bg flex items-center justify-center flex-shrink-0`}>
+                  <span className={`material-symbols-outlined text-${event.type} text-[18px]`}>{event.icon}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm sm:text-base font-semibold text-on-surface">{event.title}</p>
-                  <p className="text-xs sm:text-sm text-outline mt-0.5">{event.time}</p>
+                  <p className="text-sm font-semibold text-on-surface">{event.title}</p>
+                  <p className="text-xs text-outline mt-0.5">{event.time}</p>
                 </div>
-                <span className="material-symbols-outlined text-outline" style={{ fontSize: '20px' }}>chevron_right</span>
+                <span className="material-symbols-outlined text-outline text-[18px] flex-shrink-0">chevron_right</span>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       </div>

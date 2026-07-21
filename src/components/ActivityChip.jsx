@@ -1,4 +1,4 @@
-const TYPES = {
+const types = {
   feeding: { icon: 'restaurant', label: 'Feeding' },
   sleep: { icon: 'bedtime', label: 'Sleep' },
   diaper: { icon: 'child_care', label: 'Diaper' },
@@ -8,32 +8,28 @@ const TYPES = {
 };
 
 export default function ActivityChip({ type, selected, onClick, size = 'md' }) {
-  const config = TYPES[type];
-  if (!config) return null;
+  const t = types[type];
+  if (!t) return null;
 
   const sizeClasses = size === 'lg'
-    ? 'w-full py-4 flex-col gap-1.5 text-sm'
-    : 'px-4 py-2 text-xs';
+    ? 'p-4 flex flex-col items-center gap-2'
+    : 'px-3 py-1.5 flex items-center gap-1.5';
+
+  const iconSize = size === 'lg' ? 'text-[24px]' : 'text-[16px]';
 
   return (
     <button
       onClick={onClick}
-      className={`
-        flex items-center justify-center gap-2 rounded-xl font-semibold
-        transition-all duration-150 touch-target
-        ${sizeClasses}
-        ${selected
+      className={`rounded-xl transition-all duration-150 ${sizeClasses} ${
+        selected
           ? `activity-${type}`
-          : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/30'
-        }
-      `}
+          : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/20'
+      }`}
     >
-      <span className="material-symbols-outlined" style={{ fontSize: size === 'lg' ? '28px' : '20px' }}>
-        {config.icon}
-      </span>
-      {config.label}
+      <span className={`material-symbols-outlined ${iconSize}`}>{t.icon}</span>
+      <span className={`font-semibold ${size === 'lg' ? 'text-xs' : 'text-xs'}`}>{t.label}</span>
     </button>
   );
 }
 
-export { TYPES };
+export { types };

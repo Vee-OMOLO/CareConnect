@@ -1,13 +1,13 @@
-export default function Card({ children, className = '', onClick, accent, padding = 'p-4' }) {
-  const accentClass = accent ? `activity-${accent}-border` : '';
-  const interactiveClass = onClick ? 'card-interactive' : '';
-
+export default function Card({ children, className = '', padding = 'p-4', onClick }) {
   return (
     <div
-      className={`card ${accentClass} ${interactiveClass} ${padding} ${className}`}
+      className={`card ${onClick ? 'card-interactive' : ''} ${className}`}
+      style={{ padding: undefined }}
       onClick={onClick}
     >
-      {children}
+      <div className={padding}>
+        {children}
+      </div>
     </div>
   );
 }

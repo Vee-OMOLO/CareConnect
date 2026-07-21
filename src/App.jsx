@@ -27,10 +27,11 @@ function RoleGate({ children }) {
 export default function App() {
   const { currentUser, userRole } = useAuth();
 
-  return (
-    <div className="min-h-dvh bg-surface">
-      {/* App Shell - mobile-width container */}
-      <div className="app-shell">
+  const isAuthPage = !currentUser || !userRole;
+
+  if (isAuthPage) {
+    return (
+      <div className="app-shell-auth">
         <Routes>
           <Route path="/login" element={
             currentUser ? <Navigate to={userRole === 'parent' ? '/parent' : userRole === 'caregiver' ? '/caregiver' : '/role-selection'} /> : <Login />
@@ -41,25 +42,33 @@ export default function App() {
           <Route path="/role-selection" element={
             <ProtectedRoute><RoleSelection /></ProtectedRoute>
           } />
-
-          {/* Parent Routes */}
-          <Route path="/parent" element={<RoleGate><ParentHome /></RoleGate>} />
-          <Route path="/parent/calendar" element={<RoleGate><Calendar /></RoleGate>} />
-          <Route path="/parent/tracking" element={<RoleGate><TrackingMap /></RoleGate>} />
-
-          {/* Caregiver Routes */}
-          <Route path="/caregiver" element={<RoleGate><CaregiverHome /></RoleGate>} />
-          <Route path="/caregiver/log" element={<RoleGate><LogActivity /></RoleGate>} />
-
-          {/* Common Routes */}
-          <Route path="/safety-vault" element={<RoleGate><SafetyVault /></RoleGate>} />
-          <Route path="/profile" element={<RoleGate><Profile /></RoleGate>} />
-
-          <Route path="*" element={<Navigate to={currentUser ? (userRole === 'parent' ? '/parent' : userRole === 'caregiver' ? '/caregiver' : '/role-selection') : '/login'} />} />
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
-
-        {currentUser && userRole && <BottomNav />}
       </div>
+    );
+  }
+
+  return (
+    <div className="app-shell">
+      <main className="app-main">
+        <div className="app-content">
+          <Routes>
+            <Route path="/parent" element={<RoleGate><ParentHome /></RoleGate>} />
+            <Route path="/parent/calendar" element={<RoleGate><Calendar /></RoleGate>} />
+            <Route path="/parent/tracking" element={<RoleGate><TrackingMap /></RoleGate>} />
+
+            <Route path="/caregiver" element={<RoleGate><CaregiverHome /></RoleGate>} />
+            <Route path="/caregiver/log" element={<RoleGate><LogActivity /></RoleGate>} />
+
+            <Route path="/safety-vault" element={<RoleGate><SafetyVault /></RoleGate>} />
+            <Route path="/profile" element={<RoleGate><Profile /></RoleGate>} />
+
+            <Route path="*" element={<Navigate to={userRole === 'parent' ? '/parent' : '/caregiver'} />} />
+          </Routes>
+        </div>
+      </main>
+
+      <BottomNav />
     </div>
   );
 }

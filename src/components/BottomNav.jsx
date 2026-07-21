@@ -22,37 +22,36 @@ export default function BottomNav() {
   const tabs = userRole === 'parent' ? parentTabs : caregiverTabs;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="max-w-[600px] mx-auto px-3 pb-3 sm:px-4 sm:pb-4">
-        <div className="bg-white rounded-2xl border border-black/[0.04] shadow-[0_-1px_3px_rgba(0,0,0,0.02),0_4px_12px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center justify-around py-2 sm:py-2.5">
-            {tabs.map(tab => {
-              const isActive = location.pathname === tab.path;
-              return (
-                <NavLink
-                  key={tab.path}
-                  to={tab.path}
-                  className="flex flex-col items-center gap-1 py-2 px-3 sm:px-5 rounded-xl transition-all duration-150 active:scale-95"
-                >
-                  <div className={`transition-all duration-150 ${
-                    isActive ? 'text-primary' : 'text-outline'
-                  }`}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '26px' }}>
-                      {tab.icon}
-                    </span>
-                  </div>
-                  <span className={`text-[11px] sm:text-xs font-semibold transition-all duration-150 ${
-                    isActive ? 'text-primary' : 'text-outline'
-                  }`}>
-                    {tab.label}
-                  </span>
-                  {isActive && (
-                    <div className="w-5 sm:w-6 h-0.5 bg-primary rounded-full -mt-0.5" />
-                  )}
-                </NavLink>
-              );
-            })}
-          </div>
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+    >
+      <div className="mx-2 mb-2 bg-white rounded-2xl border border-black/[0.04] shadow-[0_-1px_3px_rgba(0,0,0,0.02),0_4px_12px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-around py-2">
+          {tabs.map(tab => {
+            const isActive = location.pathname === tab.path;
+            return (
+              <NavLink
+                key={tab.path}
+                to={tab.path}
+                className="flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all duration-150 active:scale-95"
+              >
+                <span className={`material-symbols-outlined text-[24px] transition-colors duration-150 ${
+                  isActive ? 'text-primary' : 'text-outline'
+                }`}>
+                  {tab.icon}
+                </span>
+                <span className={`text-[11px] font-semibold transition-colors duration-150 ${
+                  isActive ? 'text-primary' : 'text-outline'
+                }`}>
+                  {tab.label}
+                </span>
+                {isActive && (
+                  <div className="w-5 h-[2px] bg-primary rounded-full -mt-0.5" />
+                )}
+              </NavLink>
+            );
+          })}
         </div>
       </div>
     </nav>

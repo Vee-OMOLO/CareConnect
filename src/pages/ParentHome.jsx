@@ -1,111 +1,151 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Card from '../components/Card';
+import { subscribeToActivities } from '../services/firestoreService';
 
-const todayMetrics = [
-  { type: 'feeding', icon: 'restaurant', label: 'Feedings', value: '5', last: '23 min ago' },
-  { type: 'sleep', icon: 'bedtime', label: 'Naps', value: '2', last: '1h ago' },
-  { type: 'diaper', icon: 'child_care', label: 'Changes', value: '3', last: '45 min ago' },
-];
-
-const quickActions = [
-  { icon: 'calendar_month', label: 'Calendar', color: 'bg-primary-container text-on-primary-container', path: '/parent/calendar' },
-  { icon: 'location_on', label: 'Track', color: 'bg-play-bg text-play', path: '/parent/tracking' },
-  { icon: 'shield', label: 'Safety', color: 'bg-medicine-bg text-medicine', path: '/safety-vault' },
-];
-
-const timeline = [
-  { id: 1, type: 'feeding', icon: 'restaurant', text: 'Sarah fed bottle — 4oz formula', time: '8:15 AM' },
-  { id: 2, type: 'play', icon: 'sports_esports', text: 'James — tummy time 15 min', time: '9:30 AM' },
-  { id: 3, type: 'medicine', icon: 'medication', text: 'Sarah — vitamin drops', time: '10:00 AM' },
-  { id: 4, type: 'diaper', icon: 'child_care', text: 'Sarah — diaper changed', time: '10:30 AM' },
-  { id: 5, type: 'sleep', icon: 'bedtime', text: 'Sarah — nap started', time: '11:00 AM' },
-];
+const activityIcons = {
+  feeding: 'restaurant',
+  sleep: 'bedtime',
+  diaper: 'child_care',
+  play: 'sports_esports',
+  medicine: 'medication',
+  health: 'favorite',
+};
 
 export default function ParentHome() {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
-  const greetingTime = new Date().getHours();
-  const greeting = greetingTime < 12 ? 'Good morning' : greetingTime < 17 ? 'Good afternoon' : 'Good evening';
+  const { currentUser, linkKey, childName } = useAuth();
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!linkKey) { setLoading(false); return; }
+    const unsub = subscribeToActivities(linkKey, (data) => {
+      setActivities(data);
+      setLoading(false);
+    });
+    return unsub;
+  }, [linkKey]);
+
+  const h = new Date().getHours();
+  const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+
+  const today = new Date().toDateString();
+  const todayActivities = activities.filter(a => {
+    if (!a.timestamp) return false;
+    const d = a.timestamp.seconds ? new Date(a.timestamp.seconds * 1000) : new Date(a.createdAt);
+    return d.toDateString() === today;
+  });
+
+  const todayByType = {
+    feeding: todayActivities.filter(a => a.activityType === 'feeding'),
+    sleep: todayActivities.filter(a => a.activityType === 'sleep'),
+    diaper: todayActivities.filter(a => a.activityType === 'diaper'),
+  };
+
+  function timeAgo(date) {
+    if (!date) return '';
+    const d = date.seconds ? new Date(date.seconds * 1000) : new Date(date);
+    const mins = Math.floor((Date.now() - d.getTime()) / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  }
+
+  const displayActivities = todayActivities.slice(0, 5);
 
   return (
-    <div className="pb-28 pt-6 px-4 sm:px-6 md:px-8 min-h-dvh">
+    <div className="flex flex-col gap-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 sm:mb-8 animate-fade-in-up">
-        <div>
-          <p className="text-sm sm:text-base text-on-surface-variant">{greeting}</p>
-          <h1 className="text-2xl sm:text-3xl font-bold text-on-surface tracking-tight">Margaret</h1>
+      <div className="flex items-center justify-between animate-fade-in-up">
+        <div className="min-w-0">
+          <p className="text-sm text-on-surface-variant">{greeting}</p>
+          <h1 className="text-2xl font-bold text-on-surface tracking-tight">{childName || 'Your Child'}</h1>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <button className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-surface-container-low flex items-center justify-center relative card-hover">
-            <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: '22px' }}>notifications</span>
-            <div className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-secondary rounded-full" />
-          </button>
-          <button onClick={() => navigate('/profile')} className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/8 flex items-center justify-center card-hover">
-            <span className="material-symbols-outlined text-primary" style={{ fontSize: '22px' }}>person</span>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('/profile')} className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center card-interactive">
+            <span className="material-symbols-outlined text-primary text-[20px]">person</span>
           </button>
         </div>
       </div>
 
-      {/* Olivia's Day — Today Status */}
-      <Card className="mb-5 sm:mb-6 animate-fade-in-up" padding="p-4 sm:p-5 md:p-6">
-        <div className="flex items-center gap-3 sm:gap-4 mb-4">
-          <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-health-bg flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-health" style={{ fontSize: '26px' }}>child_care</span>
+      {/* Today Status */}
+      <div className="card p-4 animate-fade-in-up" style={{ animationDelay: '0.03s' }}>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl bg-health-bg flex items-center justify-center flex-shrink-0">
+            <span className="material-symbols-outlined text-health text-[20px]">child_care</span>
           </div>
-          <div>
-            <h3 className="text-base sm:text-lg font-bold text-on-surface">Olivia's Day</h3>
-            <p className="text-xs sm:text-sm text-on-surface-variant">Doing well — 3 activities logged</p>
+          <div className="min-w-0">
+            <h3 className="text-base font-bold text-on-surface">{childName || 'Child'}'s Day</h3>
+            <p className="text-xs text-on-surface-variant">{todayActivities.length} activities logged</p>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-          {todayMetrics.map((m) => (
-            <div key={m.type} className={`rounded-xl p-3 sm:p-4 activity-${m.type}-bg text-center`}>
-              <span className={`material-symbols-outlined text-${m.type}`} style={{ fontSize: '22px' }}>{m.icon}</span>
-              <p className="text-lg sm:text-xl font-bold text-on-surface mt-1">{m.value}</p>
-              <p className="text-[10px] sm:text-xs text-on-surface-variant">{m.label}</p>
-              <p className={`text-[10px] sm:text-xs font-medium text-${m.type} mt-0.5`}>{m.last}</p>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { type: 'feeding', label: 'Feedings', data: todayByType.feeding },
+            { type: 'sleep', label: 'Naps', data: todayByType.sleep },
+            { type: 'diaper', label: 'Changes', data: todayByType.diaper },
+          ].map((m) => (
+            <div key={m.type} className={`rounded-xl p-3 activity-${m.type}-bg text-center`}>
+              <span className={`material-symbols-outlined text-${m.type} text-[18px]`}>{activityIcons[m.type]}</span>
+              <p className="text-lg font-bold text-on-surface mt-1">{m.data.length}</p>
+              <p className="text-[10px] text-on-surface-variant">{m.label}</p>
+              {m.data.length > 0 && (
+                <p className={`text-[10px] font-medium text-${m.type} mt-0.5`}>{timeAgo(m.data[0].timestamp)}</p>
+              )}
             </div>
           ))}
         </div>
-      </Card>
-
-      {/* Quick Actions */}
-      <div className="mb-5 sm:mb-6 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
-        <div className="flex gap-3 sm:gap-4">
-          {quickActions.map((action, i) => (
-            <button
-              key={i}
-              onClick={() => navigate(action.path)}
-              className="flex-1 card card-interactive p-3 sm:p-4 flex flex-col items-center gap-2 sm:gap-3"
-            >
-              <div className={`w-12 h-12 sm:w-13 sm:h-13 rounded-xl flex items-center justify-center ${action.color}`}>
-                <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>{action.icon}</span>
-              </div>
-              <span className="text-xs sm:text-sm font-semibold text-on-surface">{action.label}</span>
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* Today's Timeline */}
-      <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-        <h2 className="text-xs sm:text-sm font-bold text-on-surface-variant uppercase tracking-wider mb-3 sm:mb-4">Today</h2>
-        <Card padding="p-0">
-          <div className="divide-y divide-outline-variant/15">
-            {timeline.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4">
-                <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-lg activity-${item.type}-bg flex items-center justify-center flex-shrink-0`}>
-                  <span className={`material-symbols-outlined text-${item.type}`} style={{ fontSize: '20px' }}>{item.icon}</span>
+      {/* Quick Actions */}
+      <div className="flex gap-3 animate-fade-in-up" style={{ animationDelay: '0.06s' }}>
+        {[
+          { icon: 'calendar_month', label: 'Calendar', color: 'bg-primary-container text-on-primary-container', path: '/parent/calendar' },
+          { icon: 'location_on', label: 'Track', color: 'bg-play-bg text-play', path: '/parent/tracking' },
+          { icon: 'shield', label: 'Safety', color: 'bg-medicine-bg text-medicine', path: '/safety-vault' },
+        ].map((action, i) => (
+          <button key={i} onClick={() => navigate(action.path)} className="flex-1 card p-3 flex flex-col items-center gap-2 card-interactive">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${action.color}`}>
+              <span className="material-symbols-outlined text-[20px]">{action.icon}</span>
+            </div>
+            <span className="text-xs font-semibold text-on-surface">{action.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Timeline */}
+      <div className="animate-fade-in-up" style={{ animationDelay: '0.09s' }}>
+        <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Today</h2>
+        {loading ? (
+          <div className="card p-4 text-center text-sm text-outline">Loading...</div>
+        ) : displayActivities.length === 0 ? (
+          <div className="card p-4 text-center text-sm text-outline">No activities logged today</div>
+        ) : (
+          <div className="card overflow-hidden">
+            <div className="divide-y divide-outline-variant/15">
+              {displayActivities.map((item) => (
+                <div key={item.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className={`w-8 h-8 rounded-lg activity-${item.activityType}-bg flex items-center justify-center flex-shrink-0`}>
+                    <span className={`material-symbols-outlined text-${item.activityType} text-[16px]`}>
+                      {activityIcons[item.activityType] || 'circle'}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-on-surface truncate">
+                      {item.activityType} — {item.details?.option || 'logged'}
+                      {item.details?.quantity ? ` (${item.details.quantity})` : ''}
+                    </p>
+                  </div>
+                  <span className="text-xs text-outline flex-shrink-0">
+                    {item.timestamp ? new Date(item.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                  </span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm sm:text-base text-on-surface truncate">{item.text}</p>
-                </div>
-                <span className="text-xs sm:text-sm text-outline flex-shrink-0">{item.time}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </Card>
+        )}
       </div>
     </div>
   );
