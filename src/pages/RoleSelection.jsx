@@ -3,10 +3,10 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
-  const { setUserRole } = useAuth();
+  const { setRole } = useAuth();
 
   function handleSelect(role) {
-    setUserRole(role);
+    setRole(role);
     navigate(role === 'parent' ? '/parent' : '/caregiver');
   }
 
