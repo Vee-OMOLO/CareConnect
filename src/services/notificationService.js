@@ -13,8 +13,7 @@ export async function notifyParent(linkKey, activityType, details) {
       timestamp: serverTimestamp(),
       createdAt: new Date().toISOString(),
     });
-  } catch (e) {
-    console.log('Notification queued for later delivery');
+  } catch {
     // Save to local storage for offline
     const pending = JSON.parse(localStorage.getItem('careconnect-pending-notifications') || '[]');
     pending.push({
@@ -41,8 +40,8 @@ export async function notifySOS(linkKey, location) {
       timestamp: serverTimestamp(),
       createdAt: new Date().toISOString(),
     });
-  } catch (e) {
-    console.log('SOS notification queued');
+  } catch {
+    // Silently fail — SOS is best-effort
   }
 }
 

@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import PageHeader from '../components/PageHeader';
+import { activityColors } from '../constants/activityData';
 
 const defaultContacts = [
   { name: 'Dr. Sarah Smith', role: 'Primary Care Physician', phone: '(555) 123-4567', isPrimary: true },
@@ -15,6 +16,35 @@ const medicalInfo = [
   { label: 'Conditions', value: 'Hypertension, Type 2 Diabetes', icon: 'medical_information' },
   { label: 'Medications', value: 'Lisinopril 10mg, Metformin 500mg', icon: 'medication' },
 ];
+
+function AddContactModal({ newContact, setNewContact, onSave, onClose }) {
+  const firstInputRef = useRef(null);
+
+  useEffect(() => {
+    firstInputRef.current?.focus();
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 sm:p-6" role="dialog" aria-modal="true" aria-label="Add Contact">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md p-6 animate-slide-up shadow-lg">
+        <div className="w-10 h-1 bg-outline-variant/40 rounded-full mx-auto mb-4" />
+        <h2 className="text-lg font-bold text-on-surface mb-4">Add Contact</h2>
+        <div className="flex flex-col gap-3">
+          <input ref={firstInputRef} value={newContact.name} onChange={(e) => setNewContact({ ...newContact, name: e.target.value })} placeholder="Contact name" className="glass-input" />
+          <input value={newContact.role} onChange={(e) => setNewContact({ ...newContact, role: e.target.value })} placeholder="Relationship" className="glass-input" />
+          <input type="tel" value={newContact.phone} onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })} placeholder="Phone number" className="glass-input" />
+          <button onClick={onSave} disabled={!newContact.name || !newContact.phone} className="w-full bg-primary text-on-primary py-3 rounded-xl font-semibold text-base disabled:opacity-40">Save Contact</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function SafetyVault() {
   const [showAddContact, setShowAddContact] = useState(false);
@@ -148,10 +178,10 @@ export default function SafetyVault() {
             { name: 'Advance Directive', icon: 'description', type: 'play' },
             { name: 'Recent Lab Results', icon: 'lab', type: 'medicine' },
           ].map((doc, i) => (
-            <div key={i} className={`card p-3 activity-${doc.type}-border`}>
+            <div key={i} className="card p-3" style={{ borderLeft: `3px solid ${activityColors[doc.type]?.text || '#74777d'}` }}>
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-lg activity-${doc.type}-bg flex items-center justify-center flex-shrink-0`}>
-                  <span className={`material-symbols-outlined text-${doc.type} text-[18px]`}>{doc.icon}</span>
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: activityColors[doc.type]?.bg || '#edeeef' }}>
+                  <span className="material-symbols-outlined text-[18px]" style={{ color: activityColors[doc.type]?.text || '#44474c' }}>{doc.icon}</span>
                 </div>
                 <span className="text-sm font-semibold text-on-surface flex-1">{doc.name}</span>
                 <span className="material-symbols-outlined text-outline text-[18px] flex-shrink-0">chevron_right</span>
@@ -173,19 +203,12 @@ export default function SafetyVault() {
 
       {/* Add Contact Modal */}
       {showAddContact && (
-        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 sm:p-6">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setShowAddContact(false)} />
-          <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md p-6 animate-slide-up shadow-lg">
-            <div className="w-10 h-1 bg-outline-variant/40 rounded-full mx-auto mb-4" />
-            <h2 className="text-lg font-bold text-on-surface mb-4">Add Contact</h2>
-            <div className="flex flex-col gap-3">
-              <input value={newContact.name} onChange={(e) => setNewContact({ ...newContact, name: e.target.value })} placeholder="Contact name" className="glass-input" />
-              <input value={newContact.role} onChange={(e) => setNewContact({ ...newContact, role: e.target.value })} placeholder="Relationship" className="glass-input" />
-              <input type="tel" value={newContact.phone} onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })} placeholder="Phone number" className="glass-input" />
-              <button onClick={addContact} disabled={!newContact.name || !newContact.phone} className="w-full bg-primary text-on-primary py-3 rounded-xl font-semibold text-base disabled:opacity-40">Save Contact</button>
-            </div>
-          </div>
-        </div>
+        <AddContactModal
+          newContact={newContact}
+          setNewContact={setNewContact}
+          onSave={addContact}
+          onClose={() => setShowAddContact(false)}
+        />
       )}
     </div>
   );

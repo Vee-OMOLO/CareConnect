@@ -263,24 +263,6 @@ a {
 }
 
 /* ============================================================
-   ACTIVITY COLORS
-   ============================================================ */
-
-.activity-feeding { background: #FEF3E2; color: #E8913A; }
-.activity-sleep { background: #F0EDFF; color: #7B61FF; }
-.activity-diaper { background: #E6F9F7; color: #4ECDC4; }
-.activity-play { background: #E6F6FA; color: #45B7D1; }
-.activity-medicine { background: #FDE8EC; color: #E85D75; }
-.activity-health { background: #EAFBEC; color: #6BCB77; }
-
-.activity-feeding-border { border-left: 3px solid #E8913A; }
-.activity-sleep-border { border-left: 3px solid #7B61FF; }
-.activity-diaper-border { border-left: 3px solid #4ECDC4; }
-.activity-play-border { border-left: 3px solid #45B7D1; }
-.activity-medicine-border { border-left: 3px solid #E85D75; }
-.activity-health-border { border-left: 3px solid #6BCB77; }
-
-/* ============================================================
    GLASS INPUT
    ============================================================ */
 
@@ -459,10 +441,3 @@ input:-webkit-autofill:focus {
   -webkit-text-fill-color: #191c1d;
   transition: background-color 5000s ease-in-out 0s;
 }
-
-/* ============================================================
-   SCROLLBAR
-   ============================================================ */
-
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

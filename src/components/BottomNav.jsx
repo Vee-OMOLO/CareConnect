@@ -25,6 +25,7 @@ export default function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      aria-label="Main navigation"
     >
       <div className="mx-2 mb-2 bg-white rounded-2xl border border-black/[0.04] shadow-[0_-1px_3px_rgba(0,0,0,0.02),0_4px_12px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-around py-2">
@@ -34,6 +35,7 @@ export default function BottomNav() {
               <NavLink
                 key={tab.path}
                 to={tab.path}
+                aria-current={isActive ? 'page' : undefined}
                 className="flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all duration-150 active:scale-95"
               >
                 <span className={`material-symbols-outlined text-[24px] transition-colors duration-150 ${

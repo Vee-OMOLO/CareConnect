@@ -3,15 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { subscribeToActivities, createSOSAlert } from '../services/firestoreService';
 import Toggle from '../components/Toggle';
-
-const activityTypes = [
-  { type: 'feeding', icon: 'restaurant', label: 'Feeding' },
-  { type: 'sleep', icon: 'bedtime', label: 'Sleep' },
-  { type: 'diaper', icon: 'child_care', label: 'Diaper' },
-  { type: 'play', icon: 'sports_esports', label: 'Play' },
-  { type: 'medicine', icon: 'medication', label: 'Medicine' },
-  { type: 'health', icon: 'favorite', label: 'Health' },
-];
+import { activityColors, activityTypes } from '../constants/activityData';
 
 export default function CaregiverHome() {
   const navigate = useNavigate();
@@ -93,9 +85,10 @@ export default function CaregiverHome() {
             <button
               key={a.type}
               onClick={() => navigate(`/caregiver/log?type=${a.type}`)}
-              className={`card p-3 flex flex-col items-center gap-2 card-interactive activity-${a.type}-bg`}
+              className="card p-3 flex flex-col items-center gap-2 card-interactive"
+              style={{ backgroundColor: activityColors[a.type]?.bg }}
             >
-              <span className={`material-symbols-outlined text-${a.type} text-[24px]`}>{a.icon}</span>
+              <span className="material-symbols-outlined text-[24px]" style={{ color: activityColors[a.type]?.text }}>{a.icon}</span>
               <span className="text-xs font-semibold text-on-surface">{a.label}</span>
             </button>
           ))}
@@ -114,8 +107,8 @@ export default function CaregiverHome() {
             <div className="divide-y divide-outline-variant/15">
               {displayLogs.map((log) => (
                 <div key={log.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className={`w-8 h-8 rounded-lg activity-${log.activityType}-bg flex items-center justify-center flex-shrink-0`}>
-                    <span className={`material-symbols-outlined text-${log.activityType} text-[16px]`}>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: activityColors[log.activityType]?.bg || '#edeeef' }}>
+                    <span className="material-symbols-outlined text-[16px]" style={{ color: activityColors[log.activityType]?.text || '#44474c' }}>
                       {activityTypes.find(a => a.type === log.activityType)?.icon || 'circle'}
                     </span>
                   </div>

@@ -2,15 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { subscribeToActivities } from '../services/firestoreService';
-
-const activityIcons = {
-  feeding: 'restaurant',
-  sleep: 'bedtime',
-  diaper: 'child_care',
-  play: 'sports_esports',
-  medicine: 'medication',
-  health: 'favorite',
-};
+import { activityColors, activityIcons } from '../constants/activityData';
 
 export default function ParentHome() {
   const navigate = useNavigate();
@@ -87,12 +79,12 @@ export default function ParentHome() {
             { type: 'sleep', label: 'Naps', data: todayByType.sleep },
             { type: 'diaper', label: 'Changes', data: todayByType.diaper },
           ].map((m) => (
-            <div key={m.type} className={`rounded-xl p-3 activity-${m.type}-bg text-center`}>
-              <span className={`material-symbols-outlined text-${m.type} text-[18px]`}>{activityIcons[m.type]}</span>
+            <div key={m.type} className="rounded-xl p-3 text-center" style={{ backgroundColor: activityColors[m.type]?.bg }}>
+              <span className="material-symbols-outlined text-[18px]" style={{ color: activityColors[m.type]?.text }}>{activityIcons[m.type]}</span>
               <p className="text-lg font-bold text-on-surface mt-1">{m.data.length}</p>
               <p className="text-[10px] text-on-surface-variant">{m.label}</p>
               {m.data.length > 0 && (
-                <p className={`text-[10px] font-medium text-${m.type} mt-0.5`}>{timeAgo(m.data[0].timestamp)}</p>
+                <p className="text-[10px] font-medium mt-0.5" style={{ color: activityColors[m.type]?.text }}>{timeAgo(m.data[0].timestamp)}</p>
               )}
             </div>
           ))}
@@ -102,13 +94,13 @@ export default function ParentHome() {
       {/* Quick Actions */}
       <div className="flex gap-3 animate-fade-in-up" style={{ animationDelay: '0.06s' }}>
         {[
-          { icon: 'calendar_month', label: 'Calendar', color: 'bg-primary-container text-on-primary-container', path: '/parent/calendar' },
-          { icon: 'location_on', label: 'Track', color: 'bg-play-bg text-play', path: '/parent/tracking' },
-          { icon: 'shield', label: 'Safety', color: 'bg-medicine-bg text-medicine', path: '/safety-vault' },
+          { icon: 'calendar_month', label: 'Calendar', bg: '#1a2b3c', text: '#8192a7', path: '/parent/calendar' },
+          { icon: 'location_on', label: 'Track', bg: '#E6F6FA', text: '#45B7D1', path: '/parent/tracking' },
+          { icon: 'shield', label: 'Safety', bg: '#FDE8EC', text: '#E85D75', path: '/safety-vault' },
         ].map((action, i) => (
           <button key={i} onClick={() => navigate(action.path)} className="flex-1 card p-3 flex flex-col items-center gap-2 card-interactive">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${action.color}`}>
-              <span className="material-symbols-outlined text-[20px]">{action.icon}</span>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: action.bg }}>
+              <span className="material-symbols-outlined text-[20px]" style={{ color: action.text }}>{action.icon}</span>
             </div>
             <span className="text-xs font-semibold text-on-surface">{action.label}</span>
           </button>
@@ -127,8 +119,8 @@ export default function ParentHome() {
             <div className="divide-y divide-outline-variant/15">
               {displayActivities.map((item) => (
                 <div key={item.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className={`w-8 h-8 rounded-lg activity-${item.activityType}-bg flex items-center justify-center flex-shrink-0`}>
-                    <span className={`material-symbols-outlined text-${item.activityType} text-[16px]`}>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: activityColors[item.activityType]?.bg || '#edeeef' }}>
+                    <span className="material-symbols-outlined text-[16px]" style={{ color: activityColors[item.activityType]?.text || '#44474c' }}>
                       {activityIcons[item.activityType] || 'circle'}
                     </span>
                   </div>

@@ -4,15 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { logActivity } from '../services/firestoreService';
 import PageHeader from '../components/PageHeader';
 import ActivityChip from '../components/ActivityChip';
-
-const activityTypes = [
-  { type: 'feeding', icon: 'restaurant', label: 'Feeding', options: ['Bottle', 'Solids', 'Breastfeeding', 'Skipped'] },
-  { type: 'sleep', icon: 'bedtime', label: 'Sleep', options: ['Nap', 'Night Sleep', 'Nursery', 'Other'] },
-  { type: 'diaper', icon: 'child_care', label: 'Diaper', options: ['Wet', 'Dirty', 'Both', 'Dry'] },
-  { type: 'play', icon: 'sports_esports', label: 'Play', options: ['Tummy Time', 'Floor Play', 'Outdoor', 'Sensory'] },
-  { type: 'medicine', icon: 'medication', label: 'Medicine', options: ['Drops', 'Syrup', 'Pill', 'Inhaler'] },
-  { type: 'health', icon: 'favorite', label: 'Health', options: ['Temperature', 'Doctor Visit', 'Vaccination', 'Other'] },
-];
+import { activityColors, activityTypes } from '../constants/activityData';
 
 export default function LogActivity() {
   const navigate = useNavigate();
@@ -67,8 +59,8 @@ export default function LogActivity() {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <div className="text-center animate-scale-in">
-          <div className={`w-14 h-14 rounded-2xl activity-${selectedType}-bg flex items-center justify-center mx-auto mb-3`}>
-            <span className={`material-symbols-outlined text-${selectedType} text-[28px]`}>check</span>
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: activityColors[selectedType]?.bg || '#edeeef' }}>
+            <span className="material-symbols-outlined text-[28px]" style={{ color: activityColors[selectedType]?.text || '#44474c' }}>check</span>
           </div>
           <h2 className="text-lg font-bold text-on-surface">Logged!</h2>
           <p className="text-sm text-on-surface-variant mt-1">{currentType?.label} activity saved</p>
@@ -115,9 +107,10 @@ export default function LogActivity() {
                 onClick={() => setSelectedOption(opt)}
                 className={`py-3 px-3 rounded-xl text-sm font-medium transition-all duration-150 ${
                   selectedOption === opt
-                    ? `activity-${selectedType}`
+                    ? ''
                     : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
                 }`}
+                style={selectedOption === opt ? { backgroundColor: activityColors[selectedType]?.bg || '#edeeef', color: activityColors[selectedType]?.text || '#44474c' } : undefined}
               >
                 {opt}
               </button>

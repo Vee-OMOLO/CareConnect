@@ -1,13 +1,9 @@
-const types = {
-  feeding: { icon: 'restaurant', label: 'Feeding' },
-  sleep: { icon: 'bedtime', label: 'Sleep' },
-  diaper: { icon: 'child_care', label: 'Diaper' },
-  play: { icon: 'sports_esports', label: 'Play' },
-  medicine: { icon: 'medication', label: 'Medicine' },
-  health: { icon: 'favorite', label: 'Health' },
-};
+import { memo } from 'react';
+import { activityColors, activityTypes } from '../constants/activityData';
 
-export default function ActivityChip({ type, selected, onClick, size = 'md' }) {
+const types = Object.fromEntries(activityTypes.map(t => [t.type, { icon: t.icon, label: t.label }]));
+
+export default memo(function ActivityChip({ type, selected, onClick, size = 'md' }) {
   const t = types[type];
   if (!t) return null;
 
@@ -20,16 +16,15 @@ export default function ActivityChip({ type, selected, onClick, size = 'md' }) {
   return (
     <button
       onClick={onClick}
-      className={`rounded-xl transition-all duration-150 ${sizeClasses} ${
-        selected
-          ? `activity-${type}`
-          : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/20'
-      }`}
+      className={`rounded-xl transition-all duration-150 ${
+        selected ? '' : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/20'
+      } ${sizeClasses}`}
+      style={selected ? { backgroundColor: activityColors[type]?.bg || '#edeeef', color: activityColors[type]?.text || '#44474c' } : undefined}
     >
       <span className={`material-symbols-outlined ${iconSize}`}>{t.icon}</span>
       <span className={`font-semibold ${size === 'lg' ? 'text-xs' : 'text-xs'}`}>{t.label}</span>
     </button>
   );
-}
+});
 
 export { types };

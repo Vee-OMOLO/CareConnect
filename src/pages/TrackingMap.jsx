@@ -3,7 +3,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import PageHeader from '../components/PageHeader';
 import Toggle from '../components/Toggle';
+import { activityColors } from '../constants/activityData';
 
+const activityColorMap = activityColors;
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -23,7 +25,7 @@ const caregiverIcon = new L.DivIcon({
 function LocationUpdater({ position }) {
   const map = useMap();
   useEffect(() => {
-    if (position) map.setView(position, map.getZoom());
+    if (position) map.setView(position, 18);
   }, [position, map]);
   return null;
 }
@@ -101,7 +103,7 @@ export default function TrackingMap() {
       {/* Map */}
       {position && (
         <div className="rounded-xl overflow-hidden animate-scale-in" style={{ height: 'clamp(200px, 40vw, 400px)' }}>
-          <MapContainer center={position} zoom={15} style={{ height: '100%', width: '100%' }} zoomControl={false}>
+          <MapContainer center={position} zoom={18} style={{ height: '100%', width: '100%' }} zoomControl={false}>
             <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={position} icon={caregiverIcon}>
               <Popup><div className="text-center text-sm"><strong>Caregiver</strong><br />{position[0].toFixed(6)}, {position[1].toFixed(6)}</div></Popup>
@@ -129,10 +131,10 @@ export default function TrackingMap() {
         <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">History</h2>
         <div className="flex flex-col gap-2">
           {recentLocations.map(loc => (
-            <div key={loc.name} className={`card p-3 activity-${loc.type}-border`}>
+            <div key={loc.name} className="card p-3" style={{ borderLeft: `3px solid ${activityColors[loc.type]?.text || '#74777d'}` }}>
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-lg activity-${loc.type}-bg flex items-center justify-center flex-shrink-0`}>
-                  <span className={`material-symbols-outlined text-${loc.type} text-[18px]`}>{loc.icon}</span>
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: activityColors[loc.type]?.bg || '#edeeef' }}>
+                  <span className="material-symbols-outlined text-[18px]" style={{ color: activityColors[loc.type]?.text || '#44474c' }}>{loc.icon}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-on-surface">{loc.name}</p>

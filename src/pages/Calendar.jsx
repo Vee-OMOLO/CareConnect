@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PageHeader from '../components/PageHeader';
+import { activityColors } from '../constants/activityData';
 
 const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -64,6 +65,7 @@ export default function Calendar() {
         <div className="grid grid-cols-7 gap-1">
           {calendarDays.map((d, i) => {
             const event = events.find(e => e.day === d.day && d.currentMonth);
+
             return (
               <button
                 key={i}
@@ -75,7 +77,7 @@ export default function Calendar() {
               >
                 {d.day}
                 {event && !d.isToday && (
-                  <div className={`absolute bottom-1 w-1.5 h-1.5 rounded-full bg-${event.type}`} />
+                  <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: activityColors[event.type]?.text }} />
                 )}
               </button>
             );
@@ -87,20 +89,23 @@ export default function Calendar() {
       <div className="animate-fade-in-up" style={{ animationDelay: '0.03s' }}>
         <h2 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Upcoming</h2>
         <div className="flex flex-col gap-2">
-          {upcomingEvents.map((event, i) => (
-            <div key={i} className={`card p-3 activity-${event.type}-border`}>
-              <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-lg activity-${event.type}-bg flex items-center justify-center flex-shrink-0`}>
-                  <span className={`material-symbols-outlined text-${event.type} text-[18px]`}>{event.icon}</span>
+          {upcomingEvents.map((event, i) => {
+            const c = activityColors[event.type];
+            return (
+              <div key={i} className="card p-3" style={{ borderLeft: `3px solid ${c?.text || '#74777d'}` }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: c?.bg || '#edeeef' }}>
+                    <span className="material-symbols-outlined text-[18px]" style={{ color: c?.text || '#44474c' }}>{event.icon}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-on-surface">{event.title}</p>
+                    <p className="text-xs text-outline mt-0.5">{event.time}</p>
+                  </div>
+                  <span className="material-symbols-outlined text-outline text-[18px] flex-shrink-0">chevron_right</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-on-surface">{event.title}</p>
-                  <p className="text-xs text-outline mt-0.5">{event.time}</p>
-                </div>
-                <span className="material-symbols-outlined text-outline text-[18px] flex-shrink-0">chevron_right</span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

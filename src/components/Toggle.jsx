@@ -1,4 +1,6 @@
-export default function Toggle({ checked, onChange }) {
+import { memo } from 'react';
+
+export default memo(function Toggle({ checked, onChange }) {
   return (
     <button
       onClick={onChange}
@@ -15,4 +17,4 @@ export default function Toggle({ checked, onChange }) {
       />
     </button>
   );
-}
+});
