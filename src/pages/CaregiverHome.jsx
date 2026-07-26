@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { subscribeToActivities, createSOSAlert } from '../services/firestoreService';
+import { subscribeToActivities } from '../services/firestoreService';
 import Toggle from '../components/Toggle';
+import EmergencyDashboard from '../components/EmergencyDashboard';
 import { activityColors, activityTypes } from '../constants/activityData';
 
 export default function CaregiverHome() {
   const navigate = useNavigate();
   const { currentUser, linkKey, childName } = useAuth();
-  const [showSOS, setShowSOS] = useState(false);
+  const [showEmergency, setShowEmergency] = useState(false);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sosLoading, setSosLoading] = useState(false);
 
   useEffect(() => {
     if (!linkKey) { setLoading(false); return; }
@@ -34,32 +34,6 @@ export default function CaregiverHome() {
 
   const displayLogs = todayActivities.slice(0, 4);
 
-  async function handleSOS() {
-    if (!linkKey) return;
-    setSosLoading(true);
-    try {
-      let position = null;
-      try {
-        position = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-            reject,
-            { enableHighAccuracy: true, timeout: 10000 }
-          );
-        });
-      } catch { /* location unavailable */ }
-
-      await createSOSAlert(linkKey, position);
-      setShowSOS(false);
-      alert('SOS alert sent to emergency contacts.');
-    } catch (e) {
-      console.error('SOS failed:', e);
-      alert('Failed to send SOS. Please call emergency services directly.');
-    } finally {
-      setSosLoading(false);
-    }
-  }
-
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
@@ -69,7 +43,7 @@ export default function CaregiverHome() {
           <h1 className="text-2xl font-bold text-on-surface tracking-tight">{childName || 'Child'}</h1>
         </div>
         <button
-          onClick={() => setShowSOS(true)}
+          onClick={() => setShowEmergency(true)}
           className="flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary rounded-xl font-semibold text-sm sos-glow card-interactive"
         >
           <span className="material-symbols-outlined text-[18px]">emergency_share</span>
@@ -128,27 +102,9 @@ export default function CaregiverHome() {
         )}
       </div>
 
-      {/* SOS Modal */}
-      {showSOS && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowSOS(false)} />
-          <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 text-center animate-scale-in shadow-lg">
-            <div className="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-secondary text-[28px]">emergency</span>
-            </div>
-            <h2 className="text-lg font-bold text-on-surface mb-1">Emergency SOS</h2>
-            <p className="text-sm text-on-surface-variant mb-5">This will alert all emergency contacts with your location.</p>
-            <a href="tel:911" className="block w-full py-3 bg-secondary text-on-secondary rounded-xl font-semibold text-base mb-2">Call 911</a>
-            <button
-              onClick={handleSOS}
-              disabled={sosLoading}
-              className="w-full py-3 bg-red-100 text-secondary rounded-xl font-semibold text-sm mb-2"
-            >
-              {sosLoading ? 'Sending alert...' : 'Alert Emergency Contacts'}
-            </button>
-            <button onClick={() => setShowSOS(false)} className="w-full py-3 bg-surface-container-low text-on-surface-variant rounded-xl font-medium text-sm">Cancel</button>
-          </div>
-        </div>
+      {/* Emergency Dashboard */}
+      {showEmergency && (
+        <EmergencyDashboard onClose={() => setShowEmergency(false)} linkKey={linkKey} />
       )}
     </div>
   );

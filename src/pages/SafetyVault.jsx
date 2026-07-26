@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import { useAuth } from '../contexts/AuthContext';
 import PageHeader from '../components/PageHeader';
+import EmergencyDashboard from '../components/EmergencyDashboard';
 import { activityColors } from '../constants/activityData';
 
 const defaultContacts = [
@@ -47,7 +49,9 @@ function AddContactModal({ newContact, setNewContact, onSave, onClose }) {
 }
 
 export default function SafetyVault() {
+  const { linkKey } = useAuth();
   const [showAddContact, setShowAddContact] = useState(false);
+  const [showEmergency, setShowEmergency] = useState(false);
   const [contacts, setContacts] = useState(defaultContacts);
   const [newContact, setNewContact] = useState({ name: '', role: '', phone: '' });
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -106,7 +110,10 @@ export default function SafetyVault() {
       />
 
       {/* SOS */}
-      <button className="w-full bg-secondary text-on-secondary py-3 rounded-xl font-bold text-base flex items-center justify-center gap-2 sos-glow card-interactive animate-fade-in-up">
+      <button
+        onClick={() => setShowEmergency(true)}
+        className="w-full bg-secondary text-on-secondary py-3 rounded-xl font-bold text-base flex items-center justify-center gap-2 sos-glow card-interactive animate-fade-in-up"
+      >
         <span className="material-symbols-outlined text-[20px]">emergency</span>
         Emergency SOS
       </button>
@@ -209,6 +216,11 @@ export default function SafetyVault() {
           onSave={addContact}
           onClose={() => setShowAddContact(false)}
         />
+      )}
+
+      {/* Emergency Dashboard */}
+      {showEmergency && (
+        <EmergencyDashboard onClose={() => setShowEmergency(false)} linkKey={linkKey} />
       )}
     </div>
   );

@@ -1,14 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { subscribeToActivities } from '../services/firestoreService';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
 import { activityColors, activityIcons } from '../constants/activityData';
 
 export default function ParentHome() {
   const navigate = useNavigate();
-  const { currentUser, linkKey, childName } = useAuth();
+  const { currentUser, linkKey, childName, setChild } = useAuth();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingChild, setEditingChild] = useState(false);
+  const [childNameInput, setChildNameInput] = useState(childName || '');
+  const childInputRef = useRef(null);
 
   useEffect(() => {
     if (!linkKey) { setLoading(false); return; }
@@ -47,13 +52,63 @@ export default function ParentHome() {
 
   const displayActivities = todayActivities.slice(0, 5);
 
+  async function saveChildName() {
+    const trimmed = childNameInput.trim();
+    if (!trimmed || trimmed === childName) {
+      setEditingChild(false);
+      return;
+    }
+    setChild(trimmed);
+    if (currentUser) {
+      try {
+        await setDoc(doc(db, 'users', currentUser.uid), {
+          childName: trimmed,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+      } catch { /* silent */ }
+    }
+    setEditingChild(false);
+  }
+
+  useEffect(() => {
+    if (editingChild && childInputRef.current) {
+      childInputRef.current.focus();
+      childInputRef.current.select();
+    }
+  }, [editingChild]);
+
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center justify-between animate-fade-in-up">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-sm text-on-surface-variant">{greeting}</p>
-          <h1 className="text-2xl font-bold text-on-surface tracking-tight">{childName || 'Your Child'}</h1>
+          {editingChild ? (
+            <div className="flex items-center gap-2">
+              <input
+                ref={childInputRef}
+                value={childNameInput}
+                onChange={(e) => setChildNameInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') saveChildName();
+                  if (e.key === 'Escape') { setEditingChild(false); setChildNameInput(childName || ''); }
+                }}
+                onBlur={saveChildName}
+                className="text-2xl font-bold text-on-surface tracking-tight bg-transparent border-b-2 border-primary outline-none py-0.5 w-full"
+                placeholder="Child's name"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-on-surface tracking-tight">{childName || 'Your Child'}</h1>
+              <button
+                onClick={() => { setChildNameInput(childName || ''); setEditingChild(true); }}
+                className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 card-interactive"
+              >
+                <span className="material-symbols-outlined text-primary text-[14px]">edit</span>
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => navigate('/profile')} className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center card-interactive">

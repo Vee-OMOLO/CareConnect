@@ -25,9 +25,11 @@ export function AuthProvider({ children }) {
   const [userRole, setUserRole] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [childName, setChildName] = useState('');
+  const [parentEmail, setParentEmailState] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const linkKey = currentUser && childName ? buildLinkKey(currentUser.email, childName) : null;
+  const linkEmail = userRole === 'caregiver' && parentEmail ? parentEmail : currentUser?.email;
+  const linkKey = linkEmail && childName ? buildLinkKey(linkEmail, childName) : null;
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -41,8 +43,10 @@ export function AuthProvider({ children }) {
     setUserRole(null);
     setUserProfile(null);
     setChildName('');
+    setParentEmailState('');
     localStorage.removeItem('careconnect-role');
     localStorage.removeItem('careconnect-child');
+    localStorage.removeItem('careconnect-parent-email');
     return signOut(auth);
   }
 
@@ -54,6 +58,11 @@ export function AuthProvider({ children }) {
   const setChild = useCallback((name) => {
     setChildName(name);
     localStorage.setItem('careconnect-child', name);
+  }, []);
+
+  const setParentEmail = useCallback((email) => {
+    setParentEmailState(email);
+    localStorage.setItem('careconnect-parent-email', email);
   }, []);
 
   async function updateProfile(data) {
@@ -79,6 +88,10 @@ export function AuthProvider({ children }) {
           setChildName(data.childName);
           localStorage.setItem('careconnect-child', data.childName);
         }
+        if (data.parentEmail) {
+          setParentEmailState(data.parentEmail);
+          localStorage.setItem('careconnect-parent-email', data.parentEmail);
+        }
       }
     } catch (e) {
       console.error('Failed to load user profile:', e);
@@ -88,8 +101,10 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const savedRole = localStorage.getItem('careconnect-role');
     const savedChild = localStorage.getItem('careconnect-child');
+    const savedParentEmail = localStorage.getItem('careconnect-parent-email');
     if (savedRole) setUserRole(savedRole);
     if (savedChild) setChildName(savedChild);
+    if (savedParentEmail) setParentEmailState(savedParentEmail);
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
@@ -106,12 +121,14 @@ export function AuthProvider({ children }) {
     userRole,
     userProfile,
     childName,
+    parentEmail,
     linkKey,
     signup,
     login,
     logout,
     setRole,
     setChild,
+    setParentEmail,
     updateProfile,
     loading
   };
