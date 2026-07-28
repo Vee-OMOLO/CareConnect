@@ -4,19 +4,26 @@
 
 **Real-time care coordination for parents & caregivers**
 
+---
+
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Leaflet](https://img.shields.io/badge/Leaflet-1.9-199900?style=flat-square&logo=leaflet&logoColor=white)](https://leafletjs.com)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#)
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](#)
 
 <br/>
 
-[![Deploy on Vercel](https://img.shields.io/badge/🚀_Live_Demo-vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://zip-chi-rust.vercel.app)
-[![GitHub](https://img.shields.io/badge/📦_Source_Code-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Vee-OMOLO/CareConnect2)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#license)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](#contributing)
+
+---
+
+### 🚀 Live Demo & Source Code
+
+[![Live on Vercel](https://img.shields.io/badge/Live_Demo-🌐-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://zip-chi-rust.vercel.app)
+[![GitHub Repo](https://img.shields.io/badge/Source_Code-📦-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Vee-OMOLO/CareConnect2)
 
 </div>
 
@@ -56,14 +63,6 @@ CareConnect bridges the gap between parents and caregivers with a real-time plat
 | Leaflet + React-Leaflet | Push Notifications | |
 
 </div>
-
----
-
-## Live Demo
-
-[![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://zip-chi-rust.vercel.app)
-
-**→ [https://zip-chi-rust.vercel.app](https://zip-chi-rust.vercel.app)**
 
 ---
 
@@ -170,7 +169,7 @@ src/
 
 ## Contributing
 
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](#)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](#contributing)
 
 1. Fork the repo
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -184,7 +183,13 @@ src/
 
 MIT © [Vee Omolo](https://github.com/Vee-OMOLO)
 
+---
+
 <div align="center">
+
+[![GitHub Stars](https://img.shields.io/github/stars/Vee-OMOLO/CareConnect2?style=flat-square&color=yellow)](https://github.com/Vee-OMOLO/CareConnect2)
+[![GitHub Forks](https://img.shields.io/github/forks/Vee-OMOLO/CareConnect2?style=flat-square)](https://github.com/Vee-OMOLO/CareConnect2)
+[![GitHub Issues](https://img.shields.io/github/issues/Vee-OMOLO/CareConnect2?style=flat-square&color=red)](https://github.com/Vee-OMOLO/CareConnect2/issues)
 
 **⭐ Star this repo if you find it useful!**
 
