@@ -55,7 +55,7 @@ export default function TrackingMap() {
     } else if (navigator.geolocation) {
       watchIdRef.current = navigator.geolocation.watchPosition(
         (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
-        () => setError('Could not track location'),
+        () => { setError('Could not track location'); setWatching(false); },
         { enableHighAccuracy: true, maximumAge: 10000, distanceFilter: 10 }
       );
       setWatching(true);

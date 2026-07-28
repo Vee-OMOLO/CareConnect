@@ -8,15 +8,19 @@ import { activityColors, activityTypes } from '../constants/activityData';
 
 export default function CaregiverHome() {
   const navigate = useNavigate();
-  const { currentUser, linkKey, childName } = useAuth();
+  const { currentUser, linkKey, childName, parentEmail } = useAuth();
   const [showEmergency, setShowEmergency] = useState(false);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!linkKey) { setLoading(false); return; }
+    if (!linkKey) { setActivities([]); setLoading(false); return; }
+    setActivities([]);
+    setLoading(true);
     const unsub = subscribeToActivities(linkKey, (data) => {
       setActivities(data);
+      setLoading(false);
+    }, () => {
       setLoading(false);
     });
     return unsub;
@@ -50,6 +54,19 @@ export default function CaregiverHome() {
           SOS
         </button>
       </div>
+
+      {/* Linked Account */}
+      {parentEmail && (
+        <div className="card p-3 animate-fade-in-up" style={{ animationDelay: '0.02s' }}>
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-[16px]">link</span>
+            <span className="text-xs text-on-surface-variant">Linked to</span>
+            <span className="text-xs font-semibold text-on-surface truncate">{parentEmail}</span>
+            <span className="text-xs text-on-surface-variant">/</span>
+            <span className="text-xs font-semibold text-on-surface truncate">{childName}</span>
+          </div>
+        </div>
+      )}
 
       {/* Quick Log */}
       <div className="animate-fade-in-up" style={{ animationDelay: '0.03s' }}>

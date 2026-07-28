@@ -42,7 +42,9 @@ export default function EmergencyDashboard({ onClose, linkKey }) {
     setSosLoading(true);
     try {
       await createSOSAlert(linkKey, location);
-      await notifySOS(linkKey, location);
+      await notifySOS(linkKey, location).catch(() =>
+        console.warn('SOS recorded but parent notification failed')
+      );
       setSent(true);
       setTimeout(() => { onClose(); setSent(false); }, 2000);
     } catch {

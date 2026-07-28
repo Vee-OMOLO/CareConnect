@@ -30,7 +30,7 @@ export async function logActivity(linkKey, activityData) {
 }
 
 // Subscribe to real-time activity logs
-export function subscribeToActivities(linkKey, callback) {
+export function subscribeToActivities(linkKey, callback, onError) {
   const q = query(
     collection(db, 'activityLogs', linkKey, 'logs'),
     orderBy('timestamp', 'desc'),
@@ -42,6 +42,9 @@ export function subscribeToActivities(linkKey, callback) {
       ...doc.data(),
     }));
     callback(activities);
+  }, (error) => {
+    console.error('Activity subscription error:', error);
+    if (onError) onError(error);
   });
 }
 

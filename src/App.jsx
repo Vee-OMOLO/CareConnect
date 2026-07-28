@@ -36,7 +36,7 @@ function RoleGate({ children }) {
 }
 
 export default function App() {
-  const { currentUser, userRole } = useAuth();
+  const { currentUser, userRole, accountVersion } = useAuth();
 
   const isAuthPage = !currentUser || !userRole;
 
@@ -45,7 +45,7 @@ export default function App() {
       <div className="app-shell-auth">
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
-            <Routes>
+            <Routes key={`auth-${accountVersion}`}>
               <Route path="/login" element={
                 currentUser ? <Navigate to={userRole === 'parent' ? '/parent' : userRole === 'caregiver' ? '/caregiver' : '/role-selection'} /> : <Login />
               } />
@@ -69,7 +69,7 @@ export default function App() {
         <div className="app-content">
           <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
-              <Routes>
+              <Routes key={`app-${accountVersion}`}>
                 <Route path="/parent" element={
                   <RoleGate><ParentHome /></RoleGate>
                 } />

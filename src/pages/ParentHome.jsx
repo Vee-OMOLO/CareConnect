@@ -16,9 +16,13 @@ export default function ParentHome() {
   const childInputRef = useRef(null);
 
   useEffect(() => {
-    if (!linkKey) { setLoading(false); return; }
+    if (!linkKey) { setActivities([]); setLoading(false); return; }
+    setActivities([]);
+    setLoading(true);
     const unsub = subscribeToActivities(linkKey, (data) => {
       setActivities(data);
+      setLoading(false);
+    }, () => {
       setLoading(false);
     });
     return unsub;
@@ -65,7 +69,9 @@ export default function ParentHome() {
           childName: trimmed,
           updatedAt: serverTimestamp(),
         }, { merge: true });
-      } catch { /* silent */ }
+      } catch (e) {
+      console.error('Failed to save child name:', e);
+    }
     }
     setEditingChild(false);
   }

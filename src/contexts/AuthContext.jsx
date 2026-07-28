@@ -27,6 +27,7 @@ export function AuthProvider({ children }) {
   const [childName, setChildName] = useState('');
   const [parentEmail, setParentEmailState] = useState('');
   const [loading, setLoading] = useState(true);
+  const [accountVersion, setAccountVersion] = useState(0);
 
   const linkEmail = userRole === 'caregiver' && parentEmail ? parentEmail : currentUser?.email;
   const linkKey = linkEmail && childName ? buildLinkKey(linkEmail, childName) : null;
@@ -44,6 +45,8 @@ export function AuthProvider({ children }) {
     setUserProfile(null);
     setChildName('');
     setParentEmailState('');
+    setCurrentUser(null);
+    setAccountVersion(v => v + 1);
     localStorage.removeItem('careconnect-role');
     localStorage.removeItem('careconnect-child');
     localStorage.removeItem('careconnect-parent-email');
@@ -123,6 +126,7 @@ export function AuthProvider({ children }) {
     childName,
     parentEmail,
     linkKey,
+    accountVersion,
     signup,
     login,
     logout,
