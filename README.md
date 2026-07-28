@@ -6,24 +6,28 @@
 
 ---
 
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com)
-[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Leaflet](https://img.shields.io/badge/Leaflet-1.9-199900?style=flat-square&logo=leaflet&logoColor=white)](https://leafletjs.com)
+<p>
+<a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React"></a>
+<a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
+<a href="https://firebase.google.com"><img src="https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black" alt="Firebase"></a>
+<a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite"></a>
+<a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"></a>
+<a href="https://leafletjs.com"><img src="https://img.shields.io/badge/Leaflet-1.9-199900?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet"></a>
+</p>
 
-<br/>
-
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#license)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](#contributing)
+<p>
+<a href="#license"><img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"></a>
+<a href="#contributing"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome"></a>
+</p>
 
 ---
 
 ### 🚀 Live Demo & Source Code
 
-[![Live on Vercel](https://img.shields.io/badge/Live_Demo-🌐-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://zip-chi-rust.vercel.app)
-[![GitHub Repo](https://img.shields.io/badge/Source_Code-📦-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Vee-OMOLO/CareConnect2)
+<p>
+<a href="https://zip-chi-rust.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-%F0%9F%8C%90-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo"></a>
+<a href="https://github.com/Vee-OMOLO/CareConnect2"><img src="https://img.shields.io/badge/Source_Code-%F0%9F%93%A6-181717?style=for-the-badge&logo=github&logoColor=white" alt="Source Code"></a>
+</p>
 
 </div>
 
@@ -169,7 +173,7 @@ src/
 
 ## Contributing
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](#contributing)
+<a href="#contributing"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge" alt="PRs Welcome"></a>
 
 1. Fork the repo
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -187,9 +191,11 @@ MIT © [Vee Omolo](https://github.com/Vee-OMOLO)
 
 <div align="center">
 
-[![GitHub Stars](https://img.shields.io/github/stars/Vee-OMOLO/CareConnect2?style=flat-square&color=yellow)](https://github.com/Vee-OMOLO/CareConnect2)
-[![GitHub Forks](https://img.shields.io/github/forks/Vee-OMOLO/CareConnect2?style=flat-square)](https://github.com/Vee-OMOLO/CareConnect2)
-[![GitHub Issues](https://img.shields.io/github/issues/Vee-OMOLO/CareConnect2?style=flat-square&color=red)](https://github.com/Vee-OMOLO/CareConnect2/issues)
+<p>
+<a href="https://github.com/Vee-OMOLO/CareConnect2"><img src="https://img.shields.io/github/stars/Vee-OMOLO/CareConnect2?style=flat-square&color=yellow" alt="GitHub Stars"></a>
+<a href="https://github.com/Vee-OMOLO/CareConnect2"><img src="https://img.shields.io/github/forks/Vee-OMOLO/CareConnect2?style=flat-square" alt="GitHub Forks"></a>
+<a href="https://github.com/Vee-OMOLO/CareConnect2/issues"><img src="https://img.shields.io/github/issues/Vee-OMOLO/CareConnect2?style=flat-square&color=red" alt="GitHub Issues"></a>
+</p>
 
 **⭐ Star this repo if you find it useful!**
 
